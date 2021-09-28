@@ -7,6 +7,6 @@ namespace ModelSaber.Main.Data
     //@inject APIService api
     public class APIService
     {
-        public string Return() => DateTime.Now.ToString();
+        public string Date() => DateTime.Now.ToString();
     }
 }
