@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using ModelSaber.Database;
 
 namespace ModelSaber.Main
 {
@@ -26,6 +28,7 @@ namespace ModelSaber.Main
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ModelSaberDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<APIService>();
@@ -55,6 +58,12 @@ namespace ModelSaber.Main
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+            // do not fuck with anything below here
+            using var scope = app.ApplicationServices.CreateScope();
+            using var context = scope.ServiceProvider.GetService<ModelSaberDbContext>();
+            context.Database.Migrate();
+
         }
     }
 }
