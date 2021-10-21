@@ -23,4 +23,8 @@
     <None Include="wwwroot\Resources\icon-app-512.png" />
   </ItemGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="sass .\Style\index.scss --style=compressed --no-source-map .\wwwroot\css\site.css" />
+  </Target>
+
 </Project>
