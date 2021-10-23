@@ -32,6 +32,9 @@ namespace ModelSaber.Database.Models
         Avatar,
         Note,
         Platform,
-        Saber
+        Saber,
+        Effect,
+        Wall,
+        HealthBar
     }
 }
