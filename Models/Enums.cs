@@ -5,7 +5,7 @@ namespace ModelSaber.Database.Models
     public enum Platform : byte
     {
         Pc,
-        Qurst
+        Quest
     }
 
     [Flags]
