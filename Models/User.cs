@@ -22,6 +22,7 @@ namespace ModelSaber.Database.Models
     {
         Normal,
         Verified,
+        Moderator,
         Admin
     }
 }
