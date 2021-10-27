@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -15,14 +16,19 @@ namespace ModelSaber.Database.Models
         public ulong? DiscordId { get; set; }
         public UserLevel Level { get; set; }
         [JsonIgnore]
-        public virtual ICollection<Model> Models { get; set; }
+        public virtual ICollection<ModelUser> Models { get; set; }
     }
 
+    [Description("UserLevels for what your user is")]
     public enum UserLevel : byte
     {
+        [Description("Just your average Joe")]
         Normal,
+        [Description("Oh you just got fancy")]
         Verified,
+        [Description("Be carefull what you do")]
         Moderator,
+        [Description("Praise them")]
         Admin
     }
 }

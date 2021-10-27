@@ -9,6 +9,7 @@ namespace ModelSaber.Database.Models
     public class Tag
     {
         public int Id { get; set; }
+        public Guid CursorId { get; set; }
         public string Name { get; set; }
         [JsonIgnore]
         public virtual ICollection<ModelTag> ModelTags { get; set; }

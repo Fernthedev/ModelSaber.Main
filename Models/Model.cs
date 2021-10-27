@@ -23,6 +23,7 @@ namespace ModelSaber.Database.Models
         public DateTime Date { get; set; }
         public virtual ICollection<ModelTag> Tags { get; set; }
         public virtual ICollection<ModelVariation> ModelVariations { get; set; }
+        public virtual ICollection<ModelUser> Users { get; set; }
         public virtual ModelVariation ModelVariation { get; set; }
         public virtual User User { get; set; }
     }
@@ -36,5 +37,16 @@ namespace ModelSaber.Database.Models
         public virtual Model Model { get; set; }
         [JsonIgnore]
         public virtual Model ParentModel { get; set; }
+    }
+
+    public class ModelUser
+    {
+        public int Id { get; set; }
+        public int ModelId { get; set; }
+        public int UserId { get; set; }
+        [JsonIgnore]
+        public virtual Model Model { get; set; }
+        [JsonIgnore]
+        public virtual User User { get; set; }
     }
 }
