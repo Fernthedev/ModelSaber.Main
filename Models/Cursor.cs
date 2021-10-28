@@ -19,7 +19,7 @@ namespace ModelSaber
         public static (string?, string?) GetFirstAndLastCursor<T>(List<T>? obj, Func<T?, DateTime?> action)
         {
             if (obj == null) return (null, null);
-            return (ToCursor(action(obj.FirstOrDefault())), ToCursor(action(obj.FirstOrDefault())));
+            return (ToCursor(action(obj.FirstOrDefault())), ToCursor(action(obj.LastOrDefault())));
         }
     }
 }

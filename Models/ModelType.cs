@@ -21,6 +21,7 @@ namespace ModelSaber.Database.Models
             Field(o => o.Name);
             Field(o => o.Platform, type: typeof(PlatformType));
             Field(o => o.Status, type: typeof(StatusType));
+            Field(o => o.Type, type: typeof(TypeType));
             Field(o => o.Thumbnail);
             Field(o => o.Uuid);
             Field(o => o.DownloadPath);
@@ -114,6 +115,10 @@ namespace ModelSaber.Database.Models
     }
 
     public class StatusType : EnumerationGraphType<Status>
+    {
+    }
+
+    public class TypeType : EnumerationGraphType<TypeEnum>
     {
     }
 
