@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,7 +8,6 @@ using GraphQL.Builders;
 using GraphQL.Types;
 using GraphQL.Types.Relay.DataObjects;
 using Microsoft.EntityFrameworkCore;
-using ModelSaber.API;
 
 namespace ModelSaber.Database.Models
 {
@@ -25,9 +25,9 @@ namespace ModelSaber.Database.Models
             Field(o => o.Uuid);
             Field(o => o.DownloadPath);
             Field(o => o.UserId);
-            Field<ListGraphType<TagType>>("tags", resolve: context => context.Source.Tags.Select(t => t.Tag));
-            Field<ListGraphType<UserType>>("users", resolve: context => context.Source.Users.Select(t => t.User));
-            Field<UserType>("mainUser", resolve: context => context.Source.User);
+            Field<ListGraphType<TagType>>("tags", resolve: context => context.Source?.Tags.Select(t => t.Tag));
+            Field<ListGraphType<UserType>>("users", resolve: context => context.Source?.Users.Select(t => t.User));
+            Field<UserType>("mainUser", resolve: context => context.Source?.User);
         }
     }
 
@@ -56,7 +56,7 @@ namespace ModelSaber.Database.Models
             var getModelsTask = GetModelAsync(context, first, afterCursor, last, beforeCursor, cancellationToken);
             var getNextPageTask = GetModelsNextPageAsync(context, first, afterCursor, cancellationToken);
             var getPreviousPageTask = GetModelPreviousPageAsync(context, last, beforeCursor, cancellationToken);
-            var totalCountTask = Task.FromResult(context.Source.ModelTags.Count);
+            var totalCountTask = Task.FromResult(context.Source?.ModelTags.Count);
 
             await Task.WhenAll(getModelsTask, getNextPageTask, getPreviousPageTask, totalCountTask).ConfigureAwait(false);
             var models = await getModelsTask.ConfigureAwait(false);
@@ -67,15 +67,15 @@ namespace ModelSaber.Database.Models
 
             return new Connection<Model>
             {
-                Edges = models.Select(x => new Edge<Model>
+                Edges = models?.Select(x => new Edge<Model>
                 {
                     Cursor = Cursor.ToCursor(x.Date),
                     Node = x
                 }).ToList(),
                 PageInfo = new PageInfo
                 {
-                    HasNextPage = nextPage,
-                    HasPreviousPage = previousPage,
+                    HasNextPage = nextPage ?? false,
+                    HasPreviousPage = previousPage ?? false,
                     StartCursor = firstCursor,
                     EndCursor = lastCursor
                 },
@@ -83,26 +83,29 @@ namespace ModelSaber.Database.Models
             };
         }
 
-        private Task<bool> GetModelPreviousPageAsync(IResolveConnectionContext<Tag> context, int? last, DateTime? beforeCursor, CancellationToken cancellationToken)
+        private Task<bool?> GetModelPreviousPageAsync(IResolveConnectionContext<Tag> context, int? last, DateTime? beforeCursor, CancellationToken cancellationToken)
         {
-            return Task.FromResult(context.Source.ModelTags.Select(t => t.Model).If(beforeCursor.HasValue, x => x.Where(y => y.Date < beforeCursor.Value)).If(last.HasValue, x => x.TakeLast(last.Value)).Any());
+            return Task.FromResult(context.Source?.ModelTags.Select(t => t.Model)
+                .If(beforeCursor.HasValue, x => x.Where(y => y.Date < beforeCursor!.Value))
+                .If(last.HasValue, x => x.TakeLast(last!.Value)).Any());
         }
 
-        private Task<bool> GetModelsNextPageAsync(IResolveConnectionContext<Tag> context, int? first, DateTime? afterCursor, CancellationToken cancellationToken)
+        private Task<bool?> GetModelsNextPageAsync(IResolveConnectionContext<Tag> context, int? first, DateTime? afterCursor, CancellationToken cancellationToken)
         {
-            return Task.FromResult(context.Source.ModelTags.Select(t => t.Model).If(afterCursor.HasValue, x => x.Where(y => y.Date > afterCursor.Value)).If(first.HasValue, x => x.Take(first.Value)).Any());
+            return Task.FromResult(context.Source?.ModelTags.Select(t => t.Model)
+                .If(afterCursor.HasValue, x => x.Where(y => y.Date > afterCursor!.Value)).
+                If(first.HasValue, x => x.Take(first!.Value)).Any());
         }
 
-        private Task<List<Model>> GetModelAsync(IResolveConnectionContext<Tag> context, int? first, DateTime? afterCursor, int? last, DateTime? beforeCursor, CancellationToken cancellationToken)
+        private Task<List<Model>?> GetModelAsync(IResolveConnectionContext<Tag> context, int? first, DateTime? afterCursor, int? last, DateTime? beforeCursor, CancellationToken cancellationToken)
         {
-            if (first.HasValue)
-            {
-                return Task.FromResult(context.Source.ModelTags.Select(t => t.Model).If(afterCursor.HasValue, x => x.Where(y => y.Date > afterCursor.Value)).If(first.HasValue, x => x.Take(first.Value)).ToList());
-            }
-            else
-            {
-                return Task.FromResult(context.Source.ModelTags.Select(t => t.Model).If(beforeCursor.HasValue, x => x.Where(y => y.Date < beforeCursor.Value)).If(last.HasValue, x => x.TakeLast(last.Value)).ToList());
-            }
+            return Task.FromResult(last.HasValue ? 
+                context.Source?.ModelTags.Select(t => t.Model)
+                    .If(afterCursor.HasValue, x => x.Where(y => y.Date > afterCursor!.Value))
+                    .TakeLast(last!.Value).ToList() : 
+                context.Source?.ModelTags.Select(t => t.Model)
+                    .If(beforeCursor.HasValue, x => x.Where(y => y.Date < beforeCursor!.Value))
+                    .If(first.HasValue, x => x.TakeLast(first!.Value)).ToList());
         }
     }
 
@@ -145,7 +148,7 @@ namespace ModelSaber.Database.Models
             var getModelsTask = GetModelAsync(context, first, afterCursor, last, beforeCursor, cancellationToken);
             var getNextPageTask = GetModelsNextPageAsync(context, first, afterCursor, cancellationToken);
             var getPreviousPageTask = GetModelPreviousPageAsync(context, last, beforeCursor, cancellationToken);
-            var totalCountTask = Task.FromResult(context.Source.Models.Count);
+            var totalCountTask = Task.FromResult(context.Source?.Models.Count);
 
             await Task.WhenAll(getModelsTask, getNextPageTask, getPreviousPageTask, totalCountTask).ConfigureAwait(false);
             var models = await getModelsTask.ConfigureAwait(false);
@@ -156,15 +159,15 @@ namespace ModelSaber.Database.Models
 
             return new Connection<Model>
             {
-                Edges = models.Select(x => new Edge<Model>
+                Edges = models?.Select(x => new Edge<Model>
                 {
                     Cursor = Cursor.ToCursor(x.Date),
                     Node = x
                 }).ToList(),
                 PageInfo = new PageInfo
                 {
-                    HasNextPage = nextPage,
-                    HasPreviousPage = previousPage,
+                    HasNextPage = nextPage ?? false,
+                    HasPreviousPage = previousPage ?? false,
                     StartCursor = firstCursor,
                     EndCursor = lastCursor
                 },
@@ -172,26 +175,29 @@ namespace ModelSaber.Database.Models
             };
         }
 
-        private Task<bool> GetModelPreviousPageAsync(IResolveConnectionContext<User> context, int? last, DateTime? beforeCursor, CancellationToken cancellationToken)
+        private Task<bool?> GetModelPreviousPageAsync(IResolveConnectionContext<User> context, int? last, DateTime? beforeCursor, CancellationToken cancellationToken)
         {
-            return Task.FromResult(context.Source.Models.Select(t => t.Model).If(beforeCursor.HasValue, x => x.Where(y => y.Date < beforeCursor.Value)).If(last.HasValue, x => x.TakeLast(last.Value)).Any());
+            return Task.FromResult(context.Source?.Models.Select(t => t.Model)
+                .If(beforeCursor.HasValue, x => x.Where(y => y.Date < beforeCursor!.Value))
+                .If(last.HasValue, x => x.TakeLast(last!.Value)).Any());
         }
 
-        private Task<bool> GetModelsNextPageAsync(IResolveConnectionContext<User> context, int? first, DateTime? afterCursor, CancellationToken cancellationToken)
+        private Task<bool?> GetModelsNextPageAsync(IResolveConnectionContext<User> context, int? first, DateTime? afterCursor, CancellationToken cancellationToken)
         {
-            return Task.FromResult(context.Source.Models.Select(t => t.Model).If(afterCursor.HasValue, x => x.Where(y => y.Date > afterCursor.Value)).If(first.HasValue, x => x.Take(first.Value)).Any());
+            return Task.FromResult(context.Source?.Models.Select(t => t.Model)
+                .If(afterCursor.HasValue, x => x.Where(y => y.Date > afterCursor!.Value)).
+                If(first.HasValue, x => x.Take(first!.Value)).Any());
         }
 
-        private Task<List<Model>> GetModelAsync(IResolveConnectionContext<User> context, int? first, DateTime? afterCursor, int? last, DateTime? beforeCursor, CancellationToken cancellationToken)
+        private Task<List<Model>?> GetModelAsync(IResolveConnectionContext<User> context, int? first, DateTime? afterCursor, int? last, DateTime? beforeCursor, CancellationToken cancellationToken)
         {
-            if (first.HasValue)
-            {
-                return Task.FromResult(context.Source.Models.Select(t => t.Model).If(afterCursor.HasValue, x => x.Where(y => y.Date > afterCursor.Value)).If(first.HasValue, x => x.Take(first.Value)).ToList());
-            }
-            else
-            {
-                return Task.FromResult(context.Source.Models.Select(t => t.Model).If(beforeCursor.HasValue, x => x.Where(y => y.Date < beforeCursor.Value)).If(last.HasValue, x => x.TakeLast(last.Value)).ToList());
-            }
+            return Task.FromResult(last.HasValue ? 
+                context.Source?.Models.Select(t => t.Model)
+                    .If(afterCursor.HasValue, x => x.Where(y => y.Date > afterCursor!.Value))
+                    .TakeLast(last!.Value).ToList() : 
+                context.Source?.Models.Select(t => t.Model)
+                    .If(beforeCursor.HasValue, x => x.Where(y => y.Date < beforeCursor!.Value))
+                    .If(first.HasValue, x => x.TakeLast(first!.Value)).ToList());
         }
     }
 }
