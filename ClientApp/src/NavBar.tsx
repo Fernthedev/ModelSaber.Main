@@ -4,10 +4,10 @@ export default class NavBar extends Component{
     render() {
         return <header className="navbar">
             <a className="btn btn-primary">
-                PC
+                Github
             </a>
             <a className="btn btn-primary">
-                Quest
+                Contributors
             </a>
         </header>;
     }
