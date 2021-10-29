@@ -13,7 +13,7 @@ namespace ModelSaber.Main.Migrations
                 table: "tags",
                 type: "uuid",
                 nullable: false,
-                defaultValue: Guid.NewGuid());
+                defaultValue: "gen_random_uuid()");
 
             migrationBuilder.CreateTable(
                 name: "model_users",
