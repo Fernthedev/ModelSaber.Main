@@ -130,10 +130,10 @@ namespace ModelSaber.Database.Models
     {
         public UserType()
         {
-            Field(o => o.BSaber);
+            Field(o => o.BSaber, type: typeof(StringGraphType));
             Field(o => o.DiscordId, type: typeof(ULongGraphType));
             Field(o => o.Level, type: typeof(UserLevelType));
-            Field(o => o.Name);
+            Field(o => o.Name, type: typeof(StringGraphType));
             Connection<ModelType>()
                 .Name("models")
                 .Description("Model list")
