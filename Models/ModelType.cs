@@ -45,7 +45,7 @@ namespace ModelSaber.Database.Models
                 .PageSize(100)
                 .ResolveAsync(context => context.ResolveConnectionAsync(connectionContext => connectionContext.Source?.ModelTags.Select(t => t.Model), 
                     (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date > u!.Value)).TakeLast(i!.Value).ToList()),
-                    (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date > u!.Value)).TakeLast(i!.Value).ToList()),
+                    (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date > u!.Value)).Take(i!.Value).ToList()),
                     set => set?.Date,
                     (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date > u!.Value)).If(i.HasValue, x => x.Take(i!.Value)).Any()),
                     (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date < u!.Value)).If(i.HasValue, x => x.TakeLast(i!.Value)).Any())));
@@ -82,8 +82,8 @@ namespace ModelSaber.Database.Models
                 .Bidirectional()
                 .PageSize(100)
                 .ResolveAsync(context => context.ResolveConnectionAsync(connectionContext => connectionContext.Source?.Models.Select(t => t.Model), 
-                    (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date > u!.Value)).TakeLast(i!.Value).ToList()),
-                    (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date > u!.Value)).TakeLast(i!.Value).ToList()),
+                    (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date < u!.Value)).TakeLast(i!.Value).ToList()),
+                    (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date > u!.Value)).Take(i!.Value).ToList()),
                     set => set?.Date,
                     (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date > u!.Value)).If(i.HasValue, x => x.Take(i!.Value)).Any()),
                     (set, i, u, c) => Task.FromResult(set.If(u.HasValue, x => x.Where(y => y.Date < u!.Value)).If(i.HasValue, x => x.TakeLast(i!.Value)).Any())));
