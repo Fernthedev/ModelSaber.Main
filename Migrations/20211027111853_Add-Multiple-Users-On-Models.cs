@@ -8,12 +8,7 @@ namespace ModelSaber.Main.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<Guid>(
-                name: "cursor_id",
-                table: "tags",
-                type: "uuid",
-                nullable: false,
-                defaultValue: "gen_random_uuid()");
+            migrationBuilder.Sql("alter table tags add cursor_id uuid default gen_random_uuid()");
 
             migrationBuilder.CreateTable(
                 name: "model_users",

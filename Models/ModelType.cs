@@ -25,7 +25,7 @@ namespace ModelSaber.Database.Models
             Field(o => o.Thumbnail);
             Field(o => o.Uuid);
             Field(o => o.DownloadPath);
-            Field(o => o.UserId);
+            Field(o => o.UserId, type: typeof(StringGraphType));
             Field<ListGraphType<TagType>>("tags", resolve: context => context.Source?.Tags.Select(t => t.Tag));
             Field<ListGraphType<UserType>>("users", resolve: context => context.Source?.Users.Select(t => t.User));
             Field<UserType>("mainUser", resolve: context => context.Source?.User);
@@ -73,7 +73,7 @@ namespace ModelSaber.Database.Models
         public UserType()
         {
             Field(o => o.BSaber, type: typeof(StringGraphType));
-            Field(o => o.DiscordId, type: typeof(ULongGraphType));
+            Field(o => o.DiscordId, type: typeof(StringGraphType));
             Field(o => o.Level, type: typeof(UserLevelType));
             Field(o => o.Name, type: typeof(StringGraphType));
             Connection<ModelType>()
