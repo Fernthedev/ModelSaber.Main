@@ -43,7 +43,7 @@ namespace ModelSaber.Main.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    user_id = table.Column<ulong>(type: "bigint", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
                     uuid = table.Column<Guid>(type: "uuid", nullable: false),
                     type = table.Column<byte>(type: "smallint", nullable: false),
                     status = table.Column<byte>(type: "smallint", nullable: false),

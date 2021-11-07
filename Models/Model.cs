@@ -10,7 +10,7 @@ namespace ModelSaber.Database.Models
     public class Model
     {
         public int Id { get; set; }
-        public ulong UserId { get; set; }
+        public int UserId { get; set; }
         public Guid Uuid { get; set; }
         public TypeEnum Type { get; set; }
         public Status Status { get; set; }
