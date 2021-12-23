@@ -78,7 +78,7 @@ namespace ModelSaber.Main
             // do not fuck with anything below here
             using var scope = app.ApplicationServices.CreateScope();
             using var context = scope.ServiceProvider.GetService<ModelSaberDbContext>();
-            context.Database.Migrate();
+            context!.Database.Migrate();
 
         }
     }

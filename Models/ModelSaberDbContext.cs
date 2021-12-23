@@ -6,24 +6,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ModelSaber.Database.Models;
+using ModelSaber.Main;
 
 namespace ModelSaber.Database
 {
     public class ModelSaberDbContext : DbContext
     {
-        public DbSet<Model> Models { get; set; }
-        public DbSet<ModelTag> ModelTags { get; set; }
-        public DbSet<ModelVariation> ModelVariations { get; set; }
-        public DbSet<ModelUser> ModelUsers { get; set; }
-        public DbSet<Tag> Tags { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Model> Models { get; set; } = null!;
+        public DbSet<ModelTag> ModelTags { get; set; } = null!;
+        public DbSet<ModelVariation> ModelVariations { get; set; } = null!;
+        public DbSet<ModelUser> ModelUsers { get; set; } = null!;
+        public DbSet<Tag> Tags { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
+
+        public DbSet<Vote> Votes { get; set; } = null!;
 
         public ModelSaberDbContext(DbContextOptions<ModelSaberDbContext> options) : base(options)
         {
 
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseNpgsql("Host=localhost;Database=modelsaber_v3;Username=postgres;Password=postgres").UseSnakeCaseNamingConvention();
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseNpgsql(getConString()).UseSnakeCaseNamingConvention();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -84,6 +87,7 @@ namespace ModelSaber.Database
                 entity.HasOne(e => e.Model)
                     .WithMany(e => e.Users)
                     .HasForeignKey(e => e.ModelId);
+
                 entity.HasOne(e => e.User)
                     .WithMany(e => e.Models)
                     .HasForeignKey(e => e.UserId);
@@ -106,21 +110,49 @@ namespace ModelSaber.Database
                     .WithOne(e => e.User)
                     .HasForeignKey(e => e.UserId);
             });
+
+            modelBuilder.Entity<Vote>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Model)
+                    .WithMany(e => e.Votes)
+                    .HasForeignKey(e => e.ModelId);
+
+                entity.HasOne(e => e.User)
+                    .WithMany(e => e.Votes)
+                    .HasForeignKey(e => e.UserId);
+            });
+        }
+
+        private string getConString()
+        {
+            var db = "modelsaber_v3";
+
+            var envPW = Environment.GetEnvironmentVariable("MODELSABER_DB_PW");
+            var envUser = Environment.GetEnvironmentVariable("MODELSABER_DB_USER");
+            var envHost = Environment.GetEnvironmentVariable("MODELSABER_DB_HOST");
+            
+            var password = envPW.TryGetValue("postgres");
+            var user = envUser.TryGetValue("postgres");
+            var host = envHost.TryGetValue("localhost");
+
+            return $"Host={host};Database={db};Username={user};Password={password}";
         }
     }
 
     public static class DbSetExtensions
     {
         // ReSharper disable PossibleInvalidOperationException
-        public static Task<List<Model>> GetModelAsync(this DbSet<Model> models, int? first, DateTime? createdAfter, TypeEnum? mType, CancellationToken cancellationToken) => Task.FromResult(models.IncludeModelData().ToList().If(mType.HasValue, x => x.Where(t => t.Type == mType.Value)).If(createdAfter.HasValue, x => x.Where(y => y.Date > createdAfter.Value)).If(first.HasValue, x => x.Take(first.Value)).ToList());
-        public static Task<List<Model>> GetModelReverseAsync(this DbSet<Model> models, int? last, DateTime? createdBefore, TypeEnum? mType, CancellationToken cancellationToken) => Task.FromResult(models.IncludeModelData().ToList().If(mType.HasValue, x => x.Where(t => t.Type == mType.Value)).If(createdBefore.HasValue, x => x.Where(y => y.Date < createdBefore.Value)).If(last.HasValue, x => x.Reverse().Take(last.Value)).ToList());
-        public static Task<bool> GetModelNextPageAsync(this DbSet<Model> models, int? first, DateTime? createdAfter, CancellationToken cancellationToken) => Task.FromResult(models.If(createdAfter.HasValue, x => x.Where(y => y.Date > createdAfter.Value)).If(first.HasValue, x => x.Skip(first.Value)).Any());
-        public static Task<bool> GetModelPreviousPageAsync(this DbSet<Model> models, int? last, DateTime? createdBefore, CancellationToken cancellationToken) => Task.FromResult(models.If(createdBefore.HasValue, x => x.Where(y => y.Date < createdBefore.Value)).If(last.HasValue, x => x.SkipLast(last.Value)).Any());
+        public static Task<List<Model>> GetModelAsync(this DbSet<Model> models, int? first, DateTime? createdAfter, TypeEnum? mType, CancellationToken cancellationToken) => Task.FromResult(models.IncludeModelData().ToList().If(mType.HasValue, x => x.Where(t => t.Type == mType!.Value)).If(createdAfter.HasValue, x => x.Where(y => y.Date > createdAfter!.Value)).If(first.HasValue, x => x.Take(first!.Value)).ToList());
+        public static Task<List<Model>> GetModelReverseAsync(this DbSet<Model> models, int? last, DateTime? createdBefore, TypeEnum? mType, CancellationToken cancellationToken) => Task.FromResult(models.IncludeModelData().ToList().If(mType.HasValue, x => x.Where(t => t.Type == mType!.Value)).If(createdBefore.HasValue, x => x.Where(y => y.Date < createdBefore!.Value)).If(last.HasValue, x => x.Reverse().Take(last!.Value)).ToList());
+        public static Task<bool> GetModelNextPageAsync(this DbSet<Model> models, int? first, DateTime? createdAfter, CancellationToken cancellationToken) => Task.FromResult(models.If(createdAfter.HasValue, x => x.Where(y => y.Date > createdAfter!.Value)).If(first.HasValue, x => x.Skip(first!.Value)).Any());
+        public static Task<bool> GetModelPreviousPageAsync(this DbSet<Model> models, int? last, DateTime? createdBefore, CancellationToken cancellationToken) => Task.FromResult(models.If(createdBefore.HasValue, x => x.Where(y => y.Date < createdBefore!.Value)).If(last.HasValue, x => x.SkipLast(last!.Value)).Any());
         public static IQueryable<Model> IncludeModelData(this IQueryable<Model> models) => models.Include(t => t.Tags).ThenInclude(t => t.Tag).Include(t => t.User).Include(t => t.Users).ThenInclude(t => t.User);
-        public static Task<List<Tag>> GetTagAsync(this DbSet<Tag> tags, int? first, Guid? createdAfter, CancellationToken cancellationToken) => Task.FromResult(tags.IncludeTagData().ToList().If(createdAfter.HasValue, x => x.SkipWhile(y => y.CursorId != createdAfter.Value).Skip(1)).If(first.HasValue, x => x.Take(first.Value)).ToList());
-        public static Task<List<Tag>> GetTagReverseAsync(this DbSet<Tag> tags, int? last, Guid? createdBefore, CancellationToken cancellationToken) => Task.FromResult(tags.IncludeTagData().ToList().If(createdBefore.HasValue, x => x.SkipWhile(y => y.CursorId != createdBefore.Value).Skip(1)).If(last.HasValue, x => x.Reverse().Take(last.Value)).ToList());
-        public static Task<bool> GetTagNextPageAsync(this DbSet<Tag> tags, int? first, Guid? createdAfter, CancellationToken cancellationToken) => Task.FromResult(tags.If(createdAfter.HasValue, x => x.SkipWhile(y => y.CursorId != createdAfter.Value)).If(first.HasValue, x => x.Skip(first.Value)).Any());
-        public static Task<bool> GetTagPreviousPageAsync(this DbSet<Tag> tags, int? last, Guid? createdBefore, CancellationToken cancellationToken) => Task.FromResult(tags.If(createdBefore.HasValue, x => x.TakeWhile(y => y.CursorId != createdBefore.Value)).If(last.HasValue, x => x.SkipLast(last.Value)).Any());
+        public static Task<List<Tag>> GetTagAsync(this DbSet<Tag> tags, int? first, Guid? createdAfter, CancellationToken cancellationToken) => Task.FromResult(tags.IncludeTagData().ToList().If(createdAfter.HasValue, x => x.SkipWhile(y => y.CursorId != createdAfter!.Value).Skip(1)).If(first.HasValue, x => x.Take(first!.Value)).ToList());
+        public static Task<List<Tag>> GetTagReverseAsync(this DbSet<Tag> tags, int? last, Guid? createdBefore, CancellationToken cancellationToken) => Task.FromResult(tags.IncludeTagData().ToList().If(createdBefore.HasValue, x => x.SkipWhile(y => y.CursorId != createdBefore!.Value).Skip(1)).If(last.HasValue, x => x.Reverse().Take(last!.Value)).ToList());
+        public static Task<bool> GetTagNextPageAsync(this DbSet<Tag> tags, int? first, Guid? createdAfter, CancellationToken cancellationToken) => Task.FromResult(tags.If(createdAfter.HasValue, x => x.SkipWhile(y => y.CursorId != createdAfter!.Value)).If(first.HasValue, x => x.Skip(first!.Value)).Any());
+        public static Task<bool> GetTagPreviousPageAsync(this DbSet<Tag> tags, int? last, Guid? createdBefore, CancellationToken cancellationToken) => Task.FromResult(tags.If(createdBefore.HasValue, x => x.TakeWhile(y => y.CursorId != createdBefore!.Value)).If(last.HasValue, x => x.SkipLast(last!.Value)).Any());
         public static IQueryable<Tag> IncludeTagData(this IQueryable<Tag> models) => models.Include(t => t.ModelTags).ThenInclude(t => t.Model).ThenInclude(t => t.Users).ThenInclude(t => t.User).ThenInclude(t => t.Models).ThenInclude(t => t.Model);
         // ReSharper restore PossibleInvalidOperationException
     }

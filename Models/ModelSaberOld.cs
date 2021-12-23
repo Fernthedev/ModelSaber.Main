@@ -168,15 +168,15 @@ namespace ModelSaber.Database.Models
                     switch (stringValue)
                     {
                         case "image.JPG":
-                            return new ThumbnailUnion { Enum = ThumbnailEnum.ImageJpg };
+                            return new ThumbnailUnion { Enum = ThumbnailEnum.Image };
                         case "image.PNG":
-                            return new ThumbnailUnion { Enum = ThumbnailEnum.ImagePng };
+                            return new ThumbnailUnion { Enum = ThumbnailEnum.Image };
                         case "image.gif":
-                            return new ThumbnailUnion { Enum = ThumbnailEnum.ImageGif };
+                            return new ThumbnailUnion { Enum = ThumbnailEnum.Video };
                         case "image.jpg":
-                            return new ThumbnailUnion { Enum = ThumbnailEnum.ImageJpg };
+                            return new ThumbnailUnion { Enum = ThumbnailEnum.Image };
                         case "image.png":
-                            return new ThumbnailUnion { Enum = ThumbnailEnum.ImagePng };
+                            return new ThumbnailUnion { Enum = ThumbnailEnum.Image };
                     }
                     try
                     {
@@ -196,14 +196,11 @@ namespace ModelSaber.Database.Models
             {
                 switch (value.Enum)
                 {
-                    case ThumbnailEnum.ImageGif:
-                        serializer.Serialize(writer, "image.gif");
+                    case ThumbnailEnum.Video:
+                        serializer.Serialize(writer, "image.webm");
                         return;
-                    case ThumbnailEnum.ImageJpg:
-                        serializer.Serialize(writer, "image.jpg");
-                        return;
-                    case ThumbnailEnum.ImagePng:
-                        serializer.Serialize(writer, "image.png");
+                    case ThumbnailEnum.Image:
+                        serializer.Serialize(writer, "image.webp");
                         return;
                 }
             }
@@ -229,15 +226,15 @@ namespace ModelSaber.Database.Models
             switch (value)
             {
                 case "image.JPG":
-                    return ThumbnailEnum.ImageJpg;
+                    return ThumbnailEnum.Image;
                 case "image.PNG":
-                    return ThumbnailEnum.ImagePng;
+                    return ThumbnailEnum.Image;
                 case "image.gif":
-                    return ThumbnailEnum.ImageGif;
+                    return ThumbnailEnum.Video;
                 case "image.jpg":
-                    return ThumbnailEnum.ImageJpg;
+                    return ThumbnailEnum.Image;
                 case "image.png":
-                    return ThumbnailEnum.ImagePng;
+                    return ThumbnailEnum.Image;
             }
             throw new Exception("Cannot unmarshal type ThumbnailEnum");
         }
@@ -252,14 +249,11 @@ namespace ModelSaber.Database.Models
             var value = (ThumbnailEnum)untypedValue;
             switch (value)
             {
-                case ThumbnailEnum.ImageGif:
-                    serializer.Serialize(writer, "image.gif");
+                case ThumbnailEnum.Video:
+                    serializer.Serialize(writer, "image.webm");
                     return;
-                case ThumbnailEnum.ImageJpg:
-                    serializer.Serialize(writer, "image.jpg");
-                    return;
-                case ThumbnailEnum.ImagePng:
-                    serializer.Serialize(writer, "image.png");
+                case ThumbnailEnum.Image:
+                    serializer.Serialize(writer, "image.webp");
                     return;
             }
             throw new Exception("Cannot marshal type ThumbnailEnum");

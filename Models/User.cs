@@ -10,13 +10,16 @@ namespace ModelSaber.Database.Models
     public class User
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string BSaber { get; set; }
+        public string Name { get; set; } = null!;
+
+        public string BSaber { get; set; } = null!;
         // this needs to be parsed to a string since javascript will freak out if its about '2^53 - 1' see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER where this runs all the way up to 2^64
         public ulong? DiscordId { get; set; }
         public UserLevel Level { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<ModelUser> Models { get; set; }
+        [JsonIgnore] 
+        public virtual ICollection<ModelUser> Models { get; set; } = null!;
+        [JsonIgnore] 
+        public virtual ICollection<Vote> Votes { get; set; } = null!;
     }
 
     [Description("UserLevels for what your user is")]

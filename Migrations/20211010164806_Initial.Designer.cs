@@ -161,8 +161,8 @@ namespace ModelSaber.Main.Migrations
                         .HasColumnType("text")
                         .HasColumnName("b_saber");
 
-                    b.Property<decimal>("DiscordId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong?>("DiscordId")
+                        .HasColumnType("bigint")
                         .HasColumnName("discord_id");
 
                     b.Property<string>("Name")

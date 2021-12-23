@@ -29,11 +29,8 @@ namespace ModelSaber.Database.Models
 
     public enum ThumbnailEnum : byte
     {
-        None,
-        ImageGif,
-        ImageJpg,
-        ImagePng,
-        ImageWebm
+        Image,
+        Video
     }
 
     public enum TypeEnum : byte
@@ -45,5 +42,17 @@ namespace ModelSaber.Database.Models
         Effect,
         Wall,
         HealthBar
+    }
+
+    public static class EnumExtensions {
+        public static string GetExt(this ThumbnailEnum en)
+        {
+            return en switch
+            {
+                ThumbnailEnum.Image => ".webp",
+                ThumbnailEnum.Video => ".webm",
+                _ => ".webp"
+            };
+        }
     }
 }

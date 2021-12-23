@@ -20,7 +20,8 @@
     "jsx": "react-jsx",
     "downlevelIteration": true,
     "noFallthroughCasesInSwitch": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "noEmit": true
   },
   "include": [
     "src"
