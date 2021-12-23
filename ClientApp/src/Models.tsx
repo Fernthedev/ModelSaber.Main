@@ -75,6 +75,15 @@ export class Model extends Component<RouteComponentProps<{ id: string }>, { mode
 }
 
 export class ModelCard extends Component<ModelData & { navigate: (path: string) => void }> {
+    vidRef: React.RefObject<HTMLVideoElement>;
+    imgRef: React.RefObject<HTMLImageElement>;
+    constructor(props: any) {
+        super(props);
+        this.imgRef = React.createRef();
+        this.vidRef = React.createRef();
+        this.fixWoopsieDaisy = this.fixWoopsieDaisy.bind(this);
+    }
+
     getCheckColor() {
         switch (this.props.status) {
             case "APPROVED":
@@ -102,10 +111,18 @@ export class ModelCard extends Component<ModelData & { navigate: (path: string) 
         }
     }
 
+    fixWoopsieDaisy() {
+        this.imgRef.current.style.display = "none";
+        this.vidRef.current.style.display = "inline";
+    }
+
     render() {
         return (<div className="card bg-dark mb-5" style={{ width: 259 }}>
             <div className="card-header" style={{ position: "relative" }}>
-                <img className="card-img-top" src={this.props.thumbnail} alt="how did you find this?" style={{ width: 259, height: 259, objectFit: "cover", margin: "-0.5rem -1rem" }} />
+                <img ref={this.imgRef} className="card-img-top" src={this.props.thumbnail} alt="you're not supposed to see this" style={{ width: 259, height: 259, objectFit: "cover", margin: "-0.5rem -1rem" }} onError={this.fixWoopsieDaisy} />
+                <video ref={this.vidRef} className="card-img-top" style={{ width: 259, height: 259, margin: "-0.5rem -1rem", display:"none" }} autoPlay loop muted playsInline>
+                    <source src="isfmoment.webm" type="video/webm"></source>
+                </video>
                 <h4 className="mt-3">
                     {this.props.name}
                 </h4>
@@ -116,7 +133,9 @@ export class ModelCard extends Component<ModelData & { navigate: (path: string) 
                 <div className="mb-2">
                     Tags
                     <br />
-                    {this.props.tags.map(t => (<div className="rounded-pill outline outline-light d-inline text-nowrap me-1 ps-2 pe-2" style={{ fontSize: ".75rem" }}>{t.name}</div>))}
+                    <div className="d-flex flex-wrap">
+                        {this.props.tags.map(t => (<div className="rounded-pill outline outline-light d-inline text-nowrap me-1 ps-2 pe-2 mt-1" style={{ fontSize: ".75rem" }}>{t.name}</div>))} 
+                    </div>
                 </div>
                 <div style={{ width: "100%", borderBottom: "1px solid rgba(0, 0, 0, 0.125)" }} />
                 <div>
