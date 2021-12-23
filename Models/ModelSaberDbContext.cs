@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ModelSaber.Database.Models;
-using ModelSaber.Main;
 
 namespace ModelSaber.Database
 {
@@ -155,5 +154,9 @@ namespace ModelSaber.Database
         public static Task<bool> GetTagPreviousPageAsync(this DbSet<Tag> tags, int? last, Guid? createdBefore, CancellationToken cancellationToken) => Task.FromResult(tags.If(createdBefore.HasValue, x => x.TakeWhile(y => y.CursorId != createdBefore!.Value)).If(last.HasValue, x => x.SkipLast(last!.Value)).Any());
         public static IQueryable<Tag> IncludeTagData(this IQueryable<Tag> models) => models.Include(t => t.ModelTags).ThenInclude(t => t.Model).ThenInclude(t => t.Users).ThenInclude(t => t.User).ThenInclude(t => t.Models).ThenInclude(t => t.Model);
         // ReSharper restore PossibleInvalidOperationException
+        public static string TryGetValue(this string? s, string def)
+        {
+            return s ?? def;
+        }
     }
 }

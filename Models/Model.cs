@@ -16,9 +16,9 @@ namespace ModelSaber.Database.Models
         public Status Status { get; set; }
         public Platform Platform { get; set; }
         public ThumbnailEnum? ThumbnailExt { get; set; }
-        public string Name { get; set; }
-        public string Hash { get; set; }
-        public string Thumbnail => ThumbnailExt.HasValue ? "images/generic.png" : $"images/{Uuid}.{ThumbnailExt?.GetExt()}";
+        public string? Name { get; set; }
+        public string? Hash { get; set; }
+        public string Thumbnail => !ThumbnailExt.HasValue ? "images/generic.png" : $"images/{Uuid}{ThumbnailExt?.GetExt()}";
         public string DownloadPath => $"models/{Uuid}.{Type.ToString().ToLower()}";
         public DateTime Date { get; set; }
         public virtual ICollection<ModelTag> Tags { get; set; }

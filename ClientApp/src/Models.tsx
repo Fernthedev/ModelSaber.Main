@@ -119,7 +119,7 @@ export class ModelCard extends Component<ModelData & { navigate: (path: string) 
     render() {
         return (<div className="card bg-dark mb-5" style={{ width: 259 }}>
             <div className="card-header" style={{ position: "relative" }}>
-                <img ref={this.imgRef} className="card-img-top" src={this.props.thumbnail} alt="you're not supposed to see this" style={{ width: 259, height: 259, objectFit: "cover", margin: "-0.5rem -1rem" }} onError={this.fixWoopsieDaisy} />
+                <img ref={this.imgRef} className="card-img-top" src={this.props.thumbnail} alt="you're not supposed to see this" style={{ width: 259, height: 259, objectFit: "cover", margin: "-0.5rem -1rem" }} />
                 <video ref={this.vidRef} className="card-img-top" style={{ width: 259, height: 259, margin: "-0.5rem -1rem", display:"none" }} autoPlay loop muted playsInline>
                     <source src="isfmoment.webm" type="video/webm"></source>
                 </video>

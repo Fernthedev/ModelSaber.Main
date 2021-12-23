@@ -43,10 +43,5 @@ namespace ModelSaber.Main
             value = value[(index + buildVersionMetadataPrefix.Length)..];
             return DateTime.ParseExact(value, "yyyy-MM-ddTHH:mm:ss:fffZ", CultureInfo.InvariantCulture);
         }
-
-        public static string TryGetValue(this string? s, string def)
-        {
-            return s ?? def;
-        }
     }
 }
