@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ModelSaber.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ModelSaber.Main.Migrations
 {
     [DbContext(typeof(ModelSaberDbContext))]
-    partial class ModelSaberDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220101104015_CustomUserTags")]
+    partial class CustomUserTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,16 +190,12 @@ namespace ModelSaber.Main.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Avatar")
-                        .HasColumnType("text")
-                        .HasColumnName("avatar");
-
                     b.Property<string>("BSaber")
                         .HasColumnType("text")
                         .HasColumnName("b_saber");
 
-                    b.Property<decimal?>("DiscordId")
-                        .HasColumnType("numeric(20,0)")
+                    b.Property<ulong>("DiscordId")
+                        .HasColumnType("bigint")
                         .HasColumnName("discord_id");
 
                     b.Property<byte>("Level")

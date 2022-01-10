@@ -1,17 +1,18 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { GQLData, GQLReturn, ModelCard, ModelData } from "./Models";
+import { GQLData, GQLReturn, ModelCard, ModelData } from "./components/Models";
+import { Loader } from "./components/Loader";
 
-class Home extends Component<any, { gql?: GQLData, after?: string, models: ModelData[] }> {
+class Home extends Component<any, { gql?: GQLData, after?: string, models: ModelData[], loading: boolean }> {
     constructor(props: any) {
         super(props);
-        this.state = { models: [] };
+        this.state = { models: [], loading: true };
         this.loadMore = this.loadMore.bind(this);
         this.nextPath = this.nextPath.bind(this);
     }
 
     loadMore() {
-        this.setState({ after: this.state.gql.models.pageInfo.endCursor }, this.componentDidMount);
+        this.setState({ after: this.state.gql.models.pageInfo.endCursor, loading: true }, this.componentDidMount);
     }
 
     nextPath(path: string) {
@@ -48,7 +49,7 @@ class Home extends Component<any, { gql?: GQLData, after?: string, models: Model
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
             }
-        }).then(res => res.ok ? res.json() as Promise<GQLReturn> : undefined).then(res => this.setState({ gql: res.data, models: this.state.models.concat(res.data.models.items) }));
+        }).then(res => res.ok ? res.json() as Promise<GQLReturn> : undefined).then(res => this.setState({ gql: res.data, models: this.state.models.concat(res.data.models.items), loading: false }));
     }
 
     render() {
@@ -60,6 +61,7 @@ class Home extends Component<any, { gql?: GQLData, after?: string, models: Model
                 {this.state.models.map(model => (<ModelCard key={model.uuid} {...model} navigate={this.nextPath} />))}
             </div>
             <button className="btn btn-primary" onClick={() => this.loadMore()}>Load more</button>
+            {this.state.loading ? <Loader></Loader> : <></>}
         </div>);
     }
 }

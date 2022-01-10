@@ -19,7 +19,7 @@ namespace ModelSaber.Main.Pages
             _logger = logger;
         }
 
-        public string RequestId { get; set; }
+        public string RequestId { get; set; } = null!;
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 

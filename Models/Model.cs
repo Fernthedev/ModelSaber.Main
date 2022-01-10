@@ -18,15 +18,15 @@ namespace ModelSaber.Database.Models
         public ThumbnailEnum? ThumbnailExt { get; set; }
         public string? Name { get; set; }
         public string? Hash { get; set; }
-        public string Thumbnail => !ThumbnailExt.HasValue ? "images/generic.png" : $"images/{Uuid}{ThumbnailExt?.GetExt()}";
-        public string DownloadPath => $"models/{Uuid}.{Type.ToString().ToLower()}";
+        public string Thumbnail => !ThumbnailExt.HasValue ? "isfmoment.webm" : $"images/{Uuid}{ThumbnailExt?.GetThumbExt()}";
+        public string DownloadPath => $"download?id={Uuid}";
         public DateTime Date { get; set; }
-        public virtual ICollection<ModelTag> Tags { get; set; }
-        public virtual ICollection<ModelVariation> ModelVariations { get; set; }
-        public virtual ICollection<ModelUser> Users { get; set; }
-        public virtual ICollection<Vote> Votes { get; set; }
-        public virtual ModelVariation ModelVariation { get; set; }
-        public virtual User User { get; set; }
+        public virtual ICollection<ModelTag> Tags { get; set; } = null!;
+        public virtual ICollection<ModelVariation> ModelVariations { get; set; } = null!;
+        public virtual ICollection<ModelUser> Users { get; set; } = null!;
+        public virtual ICollection<Vote> Votes { get; set; } = null!;
+        public virtual ModelVariation ModelVariation { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
     }
 
     public class ModelVariation
@@ -35,9 +35,9 @@ namespace ModelSaber.Database.Models
         public int ModelId { get; set; }
         public int ParentModelId { get; set; }
         [JsonIgnore]
-        public virtual Model Model { get; set; }
+        public virtual Model Model { get; set; } = null!;
         [JsonIgnore]
-        public virtual Model ParentModel { get; set; }
+        public virtual Model ParentModel { get; set; } = null!;
     }
 
     public class ModelUser
@@ -46,9 +46,9 @@ namespace ModelSaber.Database.Models
         public int ModelId { get; set; }
         public int UserId { get; set; }
         [JsonIgnore]
-        public virtual Model Model { get; set; }
+        public virtual Model Model { get; set; } = null!;
         [JsonIgnore]
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = null!;
     }
 
     public class Vote
@@ -58,8 +58,8 @@ namespace ModelSaber.Database.Models
         public int UserId { get; set; }
         public bool DownVote { get; set; }
         [JsonIgnore]
-        public virtual Model Model { get; set; }
+        public virtual Model Model { get; set; } = null!;
         [JsonIgnore]
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = null!;
     }
 }

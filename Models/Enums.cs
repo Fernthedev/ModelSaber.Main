@@ -16,15 +16,15 @@ namespace ModelSaber.Database.Models
     public enum Status : byte
     {
         [Description("Unpublished")]
-        Unpublished = 0,
+        Unpublished = 1,
         [Description("Published")]
-        Published = 1,
+        Published = 2,
         [Description("ApprovalRequired")]
-        ApprovalRequired = 2,
+        ApprovalRequired = 4,
         [Description("Approved")]
-        Approved = 4,
+        Approved = 8,
         [Description("Featured")]
-        Featured = 8
+        Featured = 16 // not in use
     }
 
     public enum ThumbnailEnum : byte
@@ -44,15 +44,27 @@ namespace ModelSaber.Database.Models
         HealthBar
     }
 
-    public static class EnumExtensions {
-        public static string GetExt(this ThumbnailEnum en)
-        {
-            return en switch
+    public static class EnumExtensions
+    {
+        public static string GetThumbExt(this ThumbnailEnum en) =>
+            en switch
             {
                 ThumbnailEnum.Image => ".webp",
                 ThumbnailEnum.Video => ".webm",
                 _ => ".webp"
             };
-        }
+
+        public static string GetTypeExt(this TypeEnum en) =>
+            en switch
+            {
+                TypeEnum.Avatar => "avatar",
+                TypeEnum.Note => "bloq",
+                TypeEnum.Platform => "plat",
+                TypeEnum.Saber => "saber",
+                TypeEnum.Wall => "pixie",
+                TypeEnum.Effect => "", // unknown TODO ask raine when their not hungover
+                TypeEnum.HealthBar => "", // unknown TODO ask raine when their not hungover
+                _ => throw new ArgumentException("Could not get type extension from param", nameof(en))
+            };
     }
 }

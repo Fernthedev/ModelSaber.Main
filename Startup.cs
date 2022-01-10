@@ -8,10 +8,13 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using ModelSaber.Database;
+using ModelSaber.Main.Helpers;
+using ModelSaber.Main.Services;
 
 namespace ModelSaber.Main
 {
@@ -29,7 +32,12 @@ namespace ModelSaber.Main
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ModelSaberDbContext>();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.AddRange(JsonConverters.Converters);
+            });
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.AddScoped<IUserService, UserService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -52,6 +60,7 @@ namespace ModelSaber.Main
                 app.UseHsts();
             }
 
+            app.UseMiddleware<JwtMiddleware>();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
