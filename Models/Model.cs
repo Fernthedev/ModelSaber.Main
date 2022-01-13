@@ -18,6 +18,7 @@ namespace ModelSaber.Database.Models
         public ThumbnailEnum? ThumbnailExt { get; set; }
         public string? Name { get; set; }
         public string? Hash { get; set; }
+        public string? Description { get; set; }
         public string Thumbnail => !ThumbnailExt.HasValue ? "isfmoment.webm" : $"images/{Uuid}{ThumbnailExt?.GetThumbExt()}";
         public string DownloadPath => $"download?id={Uuid}";
         public DateTime Date { get; set; }
