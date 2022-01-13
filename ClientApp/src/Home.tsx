@@ -24,7 +24,7 @@ class Home extends Component<any, { gql?: ModelSaberQuery, after?: string, model
     componentDidMount() {
         fetch(process.env.REACT_APP_API_URL + "/graphql", {
             method: "POST", body: JSON.stringify({
-                query: `query ($first: Int, $after: String) {
+                query: `query GetModel($first: Int, $after: String) {
                             models(first: $first, after: $after) {
                                 items {
                                     uuid

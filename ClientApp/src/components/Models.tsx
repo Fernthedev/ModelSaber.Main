@@ -3,9 +3,31 @@ import { RouteComponentProps } from "react-router-dom";
 import { GQLReturn } from "../graphql";
 import { ModelType } from "../graphqlTypes";
 
+function getTumbnail(props: ModelType, vidRef: React.RefObject<HTMLVideoElement>, imgRef: React.RefObject<HTMLImageElement>, onError: React.ReactEventHandler<HTMLImageElement>, css: React.CSSProperties) {
+    let thumb = props.thumbnail;
+    if (thumb.endsWith(".webm")) {
+        return (<video ref={vidRef} className="card-img-top" style={css} autoPlay loop muted playsInline >
+            <source src={props.thumbnail} type="video/webm"></source>
+            <source src="isfmoment.webm" type="video/webm"></source>
+        </video>)
+    }
+    else {
+        return (<>
+            <img ref={imgRef} className="card-img-top" src={props.thumbnail} alt="you're not supposed to see this" style={Object.assign(css, { objectFit: "cover" })} onError={onError} />
+            <video ref={vidRef} className="card-img-top" style={{ width: 259, height: 259, margin: "-0.5rem -1rem", display: "none" }} autoPlay loop muted playsInline>
+                <source src="isfmoment.webm" type="video/webm"></source>
+            </video>
+        </>)
+    }
+}
+
 export class Model extends Component<RouteComponentProps<{ id: string }>, { model?: ModelType }> {
+    vidRef: React.RefObject<HTMLVideoElement>;
+    imgRef: React.RefObject<HTMLImageElement>;
     constructor(props: any) {
         super(props);
+        this.imgRef = React.createRef();
+        this.vidRef = React.createRef();
         this.state = {};
     }
 
@@ -42,12 +64,17 @@ export class Model extends Component<RouteComponentProps<{ id: string }>, { mode
         });
     }
 
+    fixWoopsieDaisy() {
+        this.imgRef.current.style.display = "none";
+        this.vidRef.current.style.display = "inline";
+    }
+
     render() {
         return !!this.state.model ?
             (<>
                 <div className="row mt-2">
                     <div className="col-4 border-end pb-2">
-                        <img className="rounded" style={{ width: "100%" }} src={this.state.model.thumbnail} />
+                        {getTumbnail(this.state.model, this.vidRef, this.imgRef, this.fixWoopsieDaisy, { width: "100%", borderRadius: "0.5rem" })}
                     </div>
                     <div className="col-8">
                         <h1>{this.state.model.name}</h1>
@@ -130,29 +157,11 @@ export class ModelCard extends Component<ModelType & { navigate: (path: string) 
         this.vidRef.current.style.display = "inline";
     }
 
-    getTumbnail() {
-        let thumb = this.props.thumbnail;
-        if (thumb.endsWith(".webm")) {
-            return (<video ref={this.vidRef} className="card-img-top" style={{ width: 259, height: 259, margin: "-0.5rem -1rem" }} autoPlay loop muted playsInline >
-                <source src={this.props.thumbnail} type="video/webm"></source>
-                <source src="isfmoment.webm" type="video/webm"></source>
-            </video>)
-        }
-        else {
-            return (<>
-                <img ref={this.imgRef} className="card-img-top" src={this.props.thumbnail} alt="you're not supposed to see this" style={{ width: 259, height: 259, objectFit: "cover", margin: "-0.5rem -1rem" }} onError={this.fixWoopsieDaisy} />
-                <video ref={this.vidRef} className="card-img-top" style={{ width: 259, height: 259, margin: "-0.5rem -1rem", display: "none" }} autoPlay loop muted playsInline>
-                    <source src="isfmoment.webm" type="video/webm"></source>
-                </video>
-            </>)
-        }
-    }
-
     render() {
         return (<div className="card bg-dark mb-5" style={{ width: 259 }}>
             <div className="card-header" style={{ position: "relative" }}>
                 <div style={{ width: 259, height: 259 }}>
-                    {this.getTumbnail()}
+                    {getTumbnail(this.props, this.vidRef, this.imgRef, this.fixWoopsieDaisy, { width: 259, height: 259, margin: "-0.5rem -1rem" })}
 
                 </div>
                 <h4 className="mt-3">
