@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import { GQLData, GQLReturn, ModelCard, ModelData } from "./components/Models";
+import { ModelCard } from "./components/Models";
+import { ModelSaberQuery, ModelType } from "./graphqlTypes";
+import { GQLReturn } from "./graphql";
 import { Loader } from "./components/Loader";
 
-class Home extends Component<any, { gql?: GQLData, after?: string, models: ModelData[], loading: boolean }> {
+class Home extends Component<any, { gql?: ModelSaberQuery, after?: string, models: ModelType[], loading: boolean }> {
     constructor(props: any) {
         super(props);
         this.state = { models: [], loading: true };
@@ -22,7 +24,7 @@ class Home extends Component<any, { gql?: GQLData, after?: string, models: Model
     componentDidMount() {
         fetch(process.env.REACT_APP_API_URL + "/graphql", {
             method: "POST", body: JSON.stringify({
-                query: `query ($first: Int, $after: String) {
+                query: `query GetModel($first: Int, $after: String) {
                             models(first: $first, after: $after) {
                                 items {
                                     uuid

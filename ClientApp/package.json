@@ -12,6 +12,10 @@
     "xregexp": "^5.1.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "2.3.1",
+    "@graphql-codegen/introspection": "2.1.1",
+    "@graphql-codegen/typescript": "2.4.2",
+    "@graphql-codegen/typescript-operations": "2.2.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.1",
     "@popperjs/core": "^2.10.2",
     "@svgr/webpack": "^5.5.0",
@@ -24,6 +28,7 @@
     "@typescript-eslint/parser": "^4.0.0",
     "babel-preset-react-app": "^10.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.1.2",
     "dotenv": "^10.0.0",
@@ -38,6 +43,7 @@
     "eslint-webpack-plugin": "^3.1.0",
     "file-loader": "^6.2.0",
     "fork-ts-checker-webpack-plugin": "^6.4.0",
+    "graphql": "^16.2.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.4.4",
     "react-hot-loader": "^4.13.0",
@@ -59,7 +65,8 @@
     "build": "react-scripts build",
     "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "lint": "eslint ./src/"
+    "lint": "eslint ./src/",
+    "gen-gql": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.yml"
   },
   "browserslist": {
     "production": [

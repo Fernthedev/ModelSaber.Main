@@ -1,9 +1,33 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { GQLReturn } from "../graphql";
+import { ModelType } from "../graphqlTypes";
 
-export class Model extends Component<RouteComponentProps<{ id: string }>, { model?: ModelData }> {
+function getTumbnail(props: ModelType, vidRef: React.RefObject<HTMLVideoElement>, imgRef: React.RefObject<HTMLImageElement>, onError: React.ReactEventHandler<HTMLImageElement>, css: React.CSSProperties) {
+    let thumb = props.thumbnail;
+    if (thumb.endsWith(".webm")) {
+        return (<video ref={vidRef} className="card-img-top" style={css} autoPlay loop muted playsInline >
+            <source src={props.thumbnail} type="video/webm"></source>
+            <source src="isfmoment.webm" type="video/webm"></source>
+        </video>)
+    }
+    else {
+        return (<>
+            <img ref={imgRef} className="card-img-top" src={props.thumbnail} alt="you're not supposed to see this" style={Object.assign(css, { objectFit: "cover" })} onError={onError} />
+            <video ref={vidRef} className="card-img-top" style={{ width: 259, height: 259, margin: "-0.5rem -1rem", display: "none" }} autoPlay loop muted playsInline>
+                <source src="isfmoment.webm" type="video/webm"></source>
+            </video>
+        </>)
+    }
+}
+
+export class Model extends Component<RouteComponentProps<{ id: string }>, { model?: ModelType }> {
+    vidRef: React.RefObject<HTMLVideoElement>;
+    imgRef: React.RefObject<HTMLImageElement>;
     constructor(props: any) {
         super(props);
+        this.imgRef = React.createRef();
+        this.vidRef = React.createRef();
         this.state = {};
     }
 
@@ -17,6 +41,7 @@ export class Model extends Component<RouteComponentProps<{ id: string }>, { mode
                                 status
                                 platform
                                 type
+                                description
                                 users {
                                     name
                                     discordId
@@ -39,12 +64,17 @@ export class Model extends Component<RouteComponentProps<{ id: string }>, { mode
         });
     }
 
+    fixWoopsieDaisy() {
+        this.imgRef.current.style.display = "none";
+        this.vidRef.current.style.display = "inline";
+    }
+
     render() {
-        return this.state.model !== undefined ?
+        return !!this.state.model ?
             (<>
                 <div className="row mt-2">
-                    <div className="col-4 border-end">
-                        <img className="rounded" style={{ width: "100%" }} src={this.state.model.thumbnail} />
+                    <div className="col-4 border-end pb-2">
+                        {getTumbnail(this.state.model, this.vidRef, this.imgRef, this.fixWoopsieDaisy, { width: "100%", borderRadius: "0.5rem" })}
                     </div>
                     <div className="col-8">
                         <h1>{this.state.model.name}</h1>
@@ -64,14 +94,15 @@ export class Model extends Component<RouteComponentProps<{ id: string }>, { mode
                                 {this.state.model.tags.map(t => (<div key={t.id} className="d-inline p-1 ps-2 pe-2 me-1 mt-2 bg-dark rounded-pill text-nowrap">{t.name}</div>))}
                             </div>
                         </div>
-                        <div className="row mt-2 border-top pt-1">
-                            <h5>Description</h5>
-                            <div>
-                                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repellat laudantium labore iusto delectus deserunt doloribus, distinctio quasi porro ea vero placeat quis natus inventore debitis reiciendis? Laudantium eos soluta quibusdam!
-                                Provident aliquam ipsum, aut dolorum fugiat velit deleniti vero. Tempore inventore, quidem aliquid culpa debitis, laborum soluta distinctio voluptatum unde, veritatis harum numquam facilis atque corrupti ipsum fugiat reiciendis nisi?
-                                Dignissimos, deserunt? Tempora iusto reiciendis eligendi, asperiores minus facere laborum, consequuntur, distinctio officiis aperiam quo. Ratione fuga laboriosam culpa adipisci odit reiciendis veritatis fugiat autem, beatae aut eos eum ea.
-                            </div>
-                        </div>
+                        {!!this.state.model.description ?
+                            (<div className="row mt-2 border-top pt-1">
+                                <h5>Description</h5>
+                                <div>
+                                    {this.state.model.description}
+                                </div>
+                            </div>)
+                            :
+                            (<></>)}
                     </div>
                     <div className="row border-top pt-1">
 
@@ -84,7 +115,7 @@ export class Model extends Component<RouteComponentProps<{ id: string }>, { mode
     }
 }
 
-export class ModelCard extends Component<ModelData & { navigate: (path: string) => void }> {
+export class ModelCard extends Component<ModelType & { navigate: (path: string) => void }> {
     vidRef: React.RefObject<HTMLVideoElement>;
     imgRef: React.RefObject<HTMLImageElement>;
     constructor(props: any) {
@@ -126,29 +157,11 @@ export class ModelCard extends Component<ModelData & { navigate: (path: string) 
         this.vidRef.current.style.display = "inline";
     }
 
-    getTumbnail() {
-        let thumb = this.props.thumbnail;
-        if (thumb.endsWith(".webm")) {
-            return (<video ref={this.vidRef} className="card-img-top" style={{ width: 259, height: 259, margin: "-0.5rem -1rem" }} autoPlay loop muted playsInline >
-                <source src={this.props.thumbnail} type="video/webm"></source>
-                <source src="isfmoment.webm" type="video/webm"></source>
-            </video>)
-        }
-        else {
-            return (<>
-                <img ref={this.imgRef} className="card-img-top" src={this.props.thumbnail} alt="you're not supposed to see this" style={{ width: 259, height: 259, objectFit: "cover", margin: "-0.5rem -1rem" }} onError={this.fixWoopsieDaisy} />
-                <video ref={this.vidRef} className="card-img-top" style={{ width: 259, height: 259, margin: "-0.5rem -1rem", display: "none" }} autoPlay loop muted playsInline>
-                    <source src="isfmoment.webm" type="video/webm"></source>
-                </video>
-            </>)
-        }
-    }
-
     render() {
         return (<div className="card bg-dark mb-5" style={{ width: 259 }}>
             <div className="card-header" style={{ position: "relative" }}>
                 <div style={{ width: 259, height: 259 }}>
-                    {this.getTumbnail()}
+                    {getTumbnail(this.props, this.vidRef, this.imgRef, this.fixWoopsieDaisy, { width: 259, height: 259, margin: "-0.5rem -1rem" })}
 
                 </div>
                 <h4 className="mt-3">
@@ -186,84 +199,4 @@ export class ModelCard extends Component<ModelData & { navigate: (path: string) 
             </div>
         </div>);
     }
-}
-
-export interface User {
-    name: string;
-    bSaber: string;
-    discordId: string;
-    level: string;
-    models: Pagination<ModelData>;
-}
-
-export interface Tag {
-    name: string;
-    id: number;
-    models: Pagination<ModelData>;
-}
-
-export interface ModelData {
-    uuid: string;
-    thumbnail: string;
-    name: string;
-    status: string;
-    platform: string;
-    date: Date;
-    hash: string;
-    id: number;
-    type: string;
-    downloadPath: string;
-    userId: string;
-    mainUser: User[];
-    users: User[];
-    tags: Tag[];
-}
-
-export interface Edge<T> {
-    cursor: string;
-    node: T;
-}
-
-export interface Pagination<T> {
-    items: T[];
-    pageInfo: PageInfo;
-    edges: Edge<T>;
-    totalCount: number;
-}
-
-export interface PageInfo {
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-    startCursor: string;
-    endCursor: string;
-}
-
-export interface GQLData {
-    model: ModelData;
-    models: Pagination<ModelData>;
-    tags: Pagination<Tag>;
-}
-
-type StringNumber = string | number;
-
-export interface GQLError {
-    message: string;
-    locations: Location[];
-    path: StringNumber[];
-    extensions: Extensions;
-}
-
-export interface Location {
-    line: number;
-    column: number;
-}
-
-export interface Extensions {
-    code: string;
-    codes: string[];
-}
-
-export interface GQLReturn {
-    data: GQLData;
-    errors: GQLError[];
 }
