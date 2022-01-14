@@ -2318,6 +2318,10 @@
     <None Remove="Publish" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ModelSaber.Models\ModelSaber.Models.csproj" />
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="yarn --version" ContinueOnError="true">

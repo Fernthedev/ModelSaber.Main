@@ -7,7 +7,7 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace ModelSaber.Database.Models
+namespace ModelSaber.Models
 {
     public class ModelSaberOld
     {

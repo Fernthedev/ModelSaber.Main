@@ -5,7 +5,7 @@ using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ModelSaber.Database.Models;
+using ModelSaber.Models;
 
 namespace ModelSaber.Database
 {
@@ -186,11 +186,13 @@ namespace ModelSaber.Database
                 .If(createdBefore.HasValue, x => x.SkipWhile(y => y.Uuid != createdBefore!.Value).Skip(1))
                 .If(last.HasValue, x => x.Take(last!.Value)).ToList());
 
-        public static Task<bool> GetModelNextPageAsync(this DbSet<Model> models, int? first, Guid? createdAfter, CancellationToken cancellationToken) => 
-            Task.FromResult(models.ToList().If(createdAfter.HasValue, x => x.SkipWhile(y => y.Uuid != createdAfter!.Value)).If(first.HasValue, x => x.Skip(first!.Value)).Any());
+        public static Task<bool> GetModelNextPageAsync(this DbSet<Model> models, CancellationToken cancellationToken, int? id) => id.HasValue ?
+            Task.FromResult(models.Any(t => t.Id > id.Value))
+            : Task.FromResult(false);
 
-        public static Task<bool> GetModelPreviousPageAsync(this DbSet<Model> models, int? last, Guid? createdBefore, CancellationToken cancellationToken) => 
-            Task.FromResult(models.ToList().If(createdBefore.HasValue, x => x.TakeWhile(y => y.Uuid != createdBefore!.Value)).If(last.HasValue, x => x.SkipLast(last!.Value)).Any());
+        public static Task<bool> GetModelPreviousPageAsync(this DbSet<Model> models, CancellationToken cancellationToken, int? id) => id.HasValue ?
+            Task.FromResult(models.Any(t => t.Id < id.Value))
+            : Task.FromResult(false);
 
         public static IQueryable<Model> IncludeModelData(this IQueryable<Model> models) => 
             models.Include(t => t.Tags).ThenInclude(t => t.Tag).Include(t => t.User).Include(t => t.Users).ThenInclude(t => t.User).ThenInclude(t => t.UserTags);
@@ -205,11 +207,13 @@ namespace ModelSaber.Database
                 .If(createdBefore.HasValue, x => x.SkipWhile(y => y.CursorId != createdBefore!.Value).Skip(1))
                 .If(last.HasValue, x => x.Take(last!.Value)).ToList());
 
-        public static Task<bool> GetTagNextPageAsync(this DbSet<Tag> tags, int? first, Guid? createdAfter, CancellationToken cancellationToken) => 
-            Task.FromResult(tags.If(createdAfter.HasValue, x => x.SkipWhile(y => y.CursorId != createdAfter!.Value)).If(first.HasValue, x => x.Skip(first!.Value)).Any());
+        public static Task<bool> GetTagNextPageAsync(this DbSet<Tag> tags, CancellationToken cancellationToken, int? id) => id.HasValue ?
+            Task.FromResult(tags.Any(t => t.Id < id.Value))
+            : Task.FromResult(false);
 
-        public static Task<bool> GetTagPreviousPageAsync(this DbSet<Tag> tags, int? last, Guid? createdBefore, CancellationToken cancellationToken) => 
-            Task.FromResult(tags.If(createdBefore.HasValue, x => x.TakeWhile(y => y.CursorId != createdBefore!.Value)).If(last.HasValue, x => x.SkipLast(last!.Value)).Any());
+        public static Task<bool> GetTagPreviousPageAsync(this DbSet<Tag> tags, CancellationToken cancellationToken, int? id) => id.HasValue ?
+            Task.FromResult(tags.Any(t => t.Id < id.Value))
+            : Task.FromResult(false);
 
         public static IQueryable<Tag> IncludeTagData(this IQueryable<Tag> models) => 
             models.Include(t => t.ModelTags).ThenInclude(t => t.Model).ThenInclude(t => t.Users).ThenInclude(t => t.User).ThenInclude(t => t.UserTags);

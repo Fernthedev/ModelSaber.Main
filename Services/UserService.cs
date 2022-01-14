@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ModelSaber.Database;
-using ModelSaber.Database.Models;
+using ModelSaber.Models;
 using ModelSaber.Main.Controllers;
 using ModelSaber.Main.Helpers;
 

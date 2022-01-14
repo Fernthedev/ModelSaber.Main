@@ -14,7 +14,6 @@ class Home extends Component<RouteComponentProps & GetModelsQueryResult & { setH
     }
 
     loadMore() {
-        console.log(this.props.data.models.pageInfo);
         this.props.setHookState({ after: this.props.data.models.pageInfo.endCursor, first: 60 });
     }
 
@@ -24,6 +23,7 @@ class Home extends Component<RouteComponentProps & GetModelsQueryResult & { setH
 
     render() {
         if (this.props.loading) return <Loader></Loader>;
+        console.log(this.props.data.models.pageInfo);
         return (<div>
             <h1 className="align-middle">
                 Welcome to ModelSaber

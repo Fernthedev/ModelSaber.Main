@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ModelSaber.Database;
-using ModelSaber.Database.Models;
+using ModelSaber.Models;
 
 namespace ModelSaber.Main.Controllers
 {

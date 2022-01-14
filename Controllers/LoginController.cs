@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ModelSaber.Database.Models;
+using ModelSaber.Models;
 using ModelSaber.Main.Helpers;
 using ModelSaber.Main.Services;
 
