@@ -5,11 +5,15 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
+import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const rootElement = document.getElementById("root");
 const loaderbackground = document.getElementById("lds-roller");
-
+const client = new ApolloClient({
+    uri: process.env.REACT_APP_API_URL + "/graphql",
+    cache: new InMemoryCache()
+});
 class Index extends Component {
     componentDidMount() {
         if (window.location.pathname !== "/login") {
@@ -24,7 +28,9 @@ class Index extends Component {
     render() {
         return (
             <BrowserRouter basename={baseUrl}>
-                <App />
+                <ApolloProvider client={client}>
+                    <App />
+                </ApolloProvider>
             </BrowserRouter>
         );
     }

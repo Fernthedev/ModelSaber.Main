@@ -1,0 +1,20 @@
+query GetModelFull($modelId: ID!) {
+    model(id: $modelId) {
+        uuid
+        name
+        status
+        platform
+        type
+        description
+        users {
+            name
+            discordId
+        }
+        tags {
+            name
+            id
+        }
+        thumbnail
+        downloadPath
+    }
+}

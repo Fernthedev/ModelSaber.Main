@@ -4,7 +4,7 @@ import Layout from "./components/Layout";
 import Developer from "./components/Developers";
 import Contributions from "./components/Contributions";
 import Home from "./Home";
-import { Model } from "./components/Models";
+import Models from "./components/Models";
 import Login from "./components/Login";
 import XRegExp from "xregexp";
 import EventEmitter from "events";
@@ -31,7 +31,7 @@ export default class App extends Component {
                 <Route path="/dev" component={Developer} />
                 <Route exact path="/discordlogin" component={Login.Login} />
                 <Route exact path="/logout" component={Login.Logout}></Route>
-                <Route exact path="/model/:id" component={Model} />
+                <Route exact path="/model/:id" component={Models.Model} />
             </Layout>
         )
     }

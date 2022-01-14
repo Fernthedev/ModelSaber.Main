@@ -1,0 +1,28 @@
+query GetModels($first: Int, $after: String) {
+    models(first: $first, after: $after) {
+        items {
+            ...Model
+        }
+        pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+        }
+    }
+}
+
+fragment Model on ModelType {
+    uuid
+    name
+    status
+    platform
+    users {
+        name
+        discordId
+    }
+    tags {
+        name
+        id
+    }
+    thumbnail
+}

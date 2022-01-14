@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { GQLReturn } from "../graphql";
-import { ModelType } from "../graphqlTypes";
+import { withGetModelFull } from "../graphql";
+import { GetModelFullQueryResult, ModelFragment } from "../graphqlTypes";
 
-function getTumbnail(props: ModelType, vidRef: React.RefObject<HTMLVideoElement>, imgRef: React.RefObject<HTMLImageElement>, onError: React.ReactEventHandler<HTMLImageElement>, css: React.CSSProperties) {
+function getTumbnail(props: { thumbnail: string }, vidRef: React.RefObject<HTMLVideoElement>, imgRef: React.RefObject<HTMLImageElement>, onError: React.ReactEventHandler<HTMLImageElement>, css: React.CSSProperties) {
     let thumb = props.thumbnail;
     if (thumb.endsWith(".webm")) {
         return (<video ref={vidRef} className="card-img-top" style={css} autoPlay loop muted playsInline >
@@ -21,47 +21,13 @@ function getTumbnail(props: ModelType, vidRef: React.RefObject<HTMLVideoElement>
     }
 }
 
-export class Model extends Component<RouteComponentProps<{ id: string }>, { model?: ModelType }> {
+export class Model extends Component<GetModelFullQueryResult & RouteComponentProps<{ id: string }>> {
     vidRef: React.RefObject<HTMLVideoElement>;
     imgRef: React.RefObject<HTMLImageElement>;
     constructor(props: any) {
         super(props);
         this.imgRef = React.createRef();
         this.vidRef = React.createRef();
-        this.state = {};
-    }
-
-    componentDidMount() {
-        fetch(process.env.REACT_APP_API_URL + "/graphql", {
-            method: "POST", body: JSON.stringify({
-                query: `query ($modelId: ID!) {
-                            model(id: $modelId) {
-                                uuid
-                                name
-                                status
-                                platform
-                                type
-                                description
-                                users {
-                                    name
-                                    discordId
-                                }
-                                tags {
-                                    name
-                                }
-                                thumbnail
-                                downloadPath
-                            }
-                        }`,
-                variables: { modelId: this.props.match.params.id, }
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        }).then(res => res.ok ? res.json() as Promise<GQLReturn> : undefined).then(res => {
-            this.setState({ model: res.data.model });
-        });
     }
 
     fixWoopsieDaisy() {
@@ -70,35 +36,37 @@ export class Model extends Component<RouteComponentProps<{ id: string }>, { mode
     }
 
     render() {
-        return !!this.state.model ?
+        if (this.props.loading) return (<></>);
+        let model = this.props.data.model;
+        return !!model ?
             (<>
                 <div className="row mt-2">
                     <div className="col-4 border-end pb-2">
-                        {getTumbnail(this.state.model, this.vidRef, this.imgRef, this.fixWoopsieDaisy, { width: "100%", borderRadius: "0.5rem" })}
+                        {getTumbnail(model, this.vidRef, this.imgRef, this.fixWoopsieDaisy, { width: "100%", borderRadius: "0.5rem" })}
                     </div>
                     <div className="col-8">
-                        <h1>{this.state.model.name}</h1>
+                        <h1>{model.name}</h1>
                         <div className="row border-top pt-1">
                             <h3>Users</h3>
                             <div className="row" style={{ marginTop: -12 }}>
-                                {this.state.model.users.map(t => (<a key={t.discordId} href="#" className="fs-5 text-decoration-none" style={{ cursor: "pointer" }}>{t.name}</a>))}
+                                {model.users.map((t: any) => (<a key={t.discordId} href="#" className="fs-5 text-decoration-none" style={{ cursor: "pointer" }}>{t.name}</a>))}
                             </div>
                         </div>
                         <div className="row border-top pt-2">
-                            <div className="col-6 text-center"><a href={`modelsaber:${this.state.model.type}:${this.state.model.uuid}`} className="h-100 w-100 btn btn-dark">One Click Install</a></div>
-                            <div className="col-6 text-center"><a href={this.state.model.downloadPath} target="_blank" className="h-100 w-100 btn btn-dark">Download</a></div>
+                            <div className="col-6 text-center"><a href={`modelsaber:${model.type}:${model.uuid}`} className="h-100 w-100 btn btn-dark">One Click Install</a></div>
+                            <div className="col-6 text-center"><a href={model.downloadPath} target="_blank" className="h-100 w-100 btn btn-dark">Download</a></div>
                         </div>
                         <div className="row mt-2 border-top pt-1">
                             <h5 className="mb-0">Tags</h5>
                             <div className="d-flex flex-wrap">
-                                {this.state.model.tags.map(t => (<div key={t.id} className="d-inline p-1 ps-2 pe-2 me-1 mt-2 bg-dark rounded-pill text-nowrap">{t.name}</div>))}
+                                {model.tags.map((t: any) => (<div key={t.id} className="d-inline p-1 ps-2 pe-2 me-1 mt-2 bg-dark rounded-pill text-nowrap">{t.name}</div>))}
                             </div>
                         </div>
-                        {!!this.state.model.description ?
+                        {!!model.description ?
                             (<div className="row mt-2 border-top pt-1">
                                 <h5>Description</h5>
                                 <div>
-                                    {this.state.model.description}
+                                    {model.description}
                                 </div>
                             </div>)
                             :
@@ -107,7 +75,9 @@ export class Model extends Component<RouteComponentProps<{ id: string }>, { mode
                     <div className="row border-top pt-1">
 
                     </div>
-                    {JSON.stringify(this.state)}
+                    <pre>
+                        {JSON.stringify(model, null, 4)}
+                    </pre>
                 </div>
             </>)
             :
@@ -115,7 +85,7 @@ export class Model extends Component<RouteComponentProps<{ id: string }>, { mode
     }
 }
 
-export class ModelCard extends Component<ModelType & { navigate: (path: string) => void }> {
+class ModelCard extends Component<ModelFragment & { navigate: (path: string) => void }> {
     vidRef: React.RefObject<HTMLVideoElement>;
     imgRef: React.RefObject<HTMLImageElement>;
     constructor(props: any) {
@@ -175,7 +145,7 @@ export class ModelCard extends Component<ModelType & { navigate: (path: string) 
                     Tags
                     <br />
                     <div className="d-flex flex-wrap">
-                        {this.props.tags.map(t => (<div key={t.id} className="rounded-pill outline outline-light d-inline text-nowrap me-1 ps-2 pe-2 mt-1" style={{ fontSize: ".75rem" }}>{t.name}</div>))}
+                        {this.props.tags.map(t => (<div key={this.props.uuid + "/" + t.id} className="rounded-pill outline outline-light d-inline text-nowrap me-1 ps-2 pe-2 mt-1" style={{ fontSize: ".75rem" }}>{t.name}</div>))}
                     </div>
                 </div>
                 <div style={{ width: "100%", borderBottom: "1px solid rgba(0, 0, 0, 0.125)" }} />
@@ -199,4 +169,9 @@ export class ModelCard extends Component<ModelType & { navigate: (path: string) 
             </div>
         </div>);
     }
+}
+
+export default {
+    Model: withGetModelFull(Model),
+    ModelCard: ModelCard
 }
