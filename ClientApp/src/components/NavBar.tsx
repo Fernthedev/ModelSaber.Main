@@ -45,6 +45,9 @@ class NavBar extends Component<RouteComponentProps, { loggedIn: boolean }> {
                     <a className="btn btn-primary" href={this.state.loggedIn ? undefined : discordLink} onClick={() => { if (this.state.loggedIn) this.navigate("/logout"); }}>
                         {this.state.loggedIn ? "Logout" : "Login"}
                     </a>
+                    <a className="btn btn-primary" href="https://github.com/legoandmars/modeldownloader">
+                        ModelDownloader
+                    </a>
                 </div>
             </div>
         </header>;
