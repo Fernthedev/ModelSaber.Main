@@ -44,6 +44,8 @@ export type ModelSaberQuery = {
   __typename?: 'ModelSaberQuery';
   /** Single model */
   model?: Maybe<ModelType>;
+  /** Lists cursors based on pagination size */
+  modelCursors?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** Model list */
   models?: Maybe<ModelConnection>;
   /** You wanted yer tags? */
@@ -55,6 +57,11 @@ export type ModelSaberQuery = {
 
 export type ModelSaberQueryModelArgs = {
   id: Scalars['ID'];
+};
+
+
+export type ModelSaberQueryModelCursorsArgs = {
+  size?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -220,6 +227,13 @@ export type GetModelFullQueryVariables = Exact<{
 
 export type GetModelFullQuery = { __typename?: 'ModelSaberQuery', model?: { __typename?: 'ModelType', uuid: string, name: string, status?: Status | null | undefined, platform?: Platform | null | undefined, type?: TypeEnum | null | undefined, description?: string | null | undefined, thumbnail: string, downloadPath: string, users?: Array<{ __typename?: 'UserType', name?: string | null | undefined, discordId?: any | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ __typename?: 'TagType', name: string, id: number } | null | undefined> | null | undefined } | null | undefined };
 
+export type GetModelCursorsQueryVariables = Exact<{
+  size?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetModelCursorsQuery = { __typename?: 'ModelSaberQuery', modelCursors?: Array<string | null | undefined> | null | undefined };
+
 export type GetModelsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
   after?: InputMaybe<Scalars['String']>;
@@ -297,6 +311,39 @@ export function useGetModelFullLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetModelFullQueryHookResult = ReturnType<typeof useGetModelFullQuery>;
 export type GetModelFullLazyQueryHookResult = ReturnType<typeof useGetModelFullLazyQuery>;
 export type GetModelFullQueryResult = Apollo.QueryResult<GetModelFullQuery, GetModelFullQueryVariables>;
+export const GetModelCursorsDocument = gql`
+    query GetModelCursors($size: Int) {
+  modelCursors(size: $size)
+}
+    `;
+
+/**
+ * __useGetModelCursorsQuery__
+ *
+ * To run a query within a React component, call `useGetModelCursorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetModelCursorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetModelCursorsQuery({
+ *   variables: {
+ *      size: // value for 'size'
+ *   },
+ * });
+ */
+export function useGetModelCursorsQuery(baseOptions?: Apollo.QueryHookOptions<GetModelCursorsQuery, GetModelCursorsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetModelCursorsQuery, GetModelCursorsQueryVariables>(GetModelCursorsDocument, options);
+      }
+export function useGetModelCursorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetModelCursorsQuery, GetModelCursorsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetModelCursorsQuery, GetModelCursorsQueryVariables>(GetModelCursorsDocument, options);
+        }
+export type GetModelCursorsQueryHookResult = ReturnType<typeof useGetModelCursorsQuery>;
+export type GetModelCursorsLazyQueryHookResult = ReturnType<typeof useGetModelCursorsLazyQuery>;
+export type GetModelCursorsQueryResult = Apollo.QueryResult<GetModelCursorsQuery, GetModelCursorsQueryVariables>;
 export const GetModelsDocument = gql`
     query GetModels($first: Int, $after: String) {
   models(first: $first, after: $after) {

@@ -9,6 +9,13 @@ $border-radius: 0.5rem;
 $border-radius-sm: 0.25rem;
 $border-radius-lg: 1rem;
 $border-color: rgba(255, 255, 255, 0.3);
+$pagination-bg: $gray-800;
+$pagination-focus-bg: $gray-600;
+$pagination-hover-bg: $gray-600;
+$pagination-disabled-bg: $gray-800;
+$pagination-color: $gray-200;
+$pagination-focus-color: $gray-200;
+$pagination-hover-color: $gray-200;
 
 // just ignore everything after this
 $spacers: (

@@ -1,0 +1,3 @@
+query GetModelCursors($size: Int){
+    modelCursors(size: $size)
+}

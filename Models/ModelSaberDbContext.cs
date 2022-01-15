@@ -186,11 +186,11 @@ namespace ModelSaber.Database
                 .If(createdBefore.HasValue, x => x.SkipWhile(y => y.Uuid != createdBefore!.Value).Skip(1))
                 .If(last.HasValue, x => x.Take(last!.Value)).ToList());
 
-        public static Task<bool> GetModelNextPageAsync(this DbSet<Model> models, CancellationToken cancellationToken, int? id) => id.HasValue ?
+        public static Task<bool> GetModelNextPageAsync(this DbSet<Model> models, CancellationToken cancellationToken, uint? id) => id.HasValue ?
             Task.FromResult(models.Any(t => t.Id > id.Value))
             : Task.FromResult(false);
 
-        public static Task<bool> GetModelPreviousPageAsync(this DbSet<Model> models, CancellationToken cancellationToken, int? id) => id.HasValue ?
+        public static Task<bool> GetModelPreviousPageAsync(this DbSet<Model> models, CancellationToken cancellationToken, uint? id) => id.HasValue ?
             Task.FromResult(models.Any(t => t.Id < id.Value))
             : Task.FromResult(false);
 
@@ -207,11 +207,11 @@ namespace ModelSaber.Database
                 .If(createdBefore.HasValue, x => x.SkipWhile(y => y.CursorId != createdBefore!.Value).Skip(1))
                 .If(last.HasValue, x => x.Take(last!.Value)).ToList());
 
-        public static Task<bool> GetTagNextPageAsync(this DbSet<Tag> tags, CancellationToken cancellationToken, int? id) => id.HasValue ?
+        public static Task<bool> GetTagNextPageAsync(this DbSet<Tag> tags, CancellationToken cancellationToken, uint? id) => id.HasValue ?
             Task.FromResult(tags.Any(t => t.Id < id.Value))
             : Task.FromResult(false);
 
-        public static Task<bool> GetTagPreviousPageAsync(this DbSet<Tag> tags, CancellationToken cancellationToken, int? id) => id.HasValue ?
+        public static Task<bool> GetTagPreviousPageAsync(this DbSet<Tag> tags, CancellationToken cancellationToken, uint? id) => id.HasValue ?
             Task.FromResult(tags.Any(t => t.Id < id.Value))
             : Task.FromResult(false);
 

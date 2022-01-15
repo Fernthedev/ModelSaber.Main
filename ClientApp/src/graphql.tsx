@@ -1,29 +1,6 @@
-import { GetModelFullQueryResult, GetModelsQueryResult, GetModelsQueryVariables, ModelSaberQuery, useGetModelFullQuery, useGetModelsQuery } from "./graphqlTypes";
+import { GetModelCursorsQueryResult, GetModelCursorsQueryVariables, GetModelFullQueryResult, GetModelsQueryResult, GetModelsQueryVariables, ModelSaberQuery, useGetModelCursorsQuery, useGetModelFullQuery, useGetModelsQuery } from "./graphqlTypes";
 import React, { ComponentType, useState } from "react";
 import { RouteComponentProps } from "react-router";
-type StringNumber = string | number;
-
-export interface GQLError {
-  message: string;
-  locations: Location[];
-  path: StringNumber[];
-  extensions: Extensions;
-}
-
-export interface Location {
-  line: number;
-  column: number;
-}
-
-export interface Extensions {
-  code: string;
-  codes: string[];
-}
-
-export interface GQLReturn {
-  data: ModelSaberQuery;
-  errors: GQLError[];
-}
 
 export function withGetModelFull(WrappedComponent: ComponentType<GetModelFullQueryResult & RouteComponentProps<{ id: string }>>) {
   return function C(props: RouteComponentProps<{ id: string }>) {
@@ -33,10 +10,22 @@ export function withGetModelFull(WrappedComponent: ComponentType<GetModelFullQue
   }
 }
 
-export function withGetModels<P>(WrappedComponent: ComponentType<GetModelsQueryResult & { setHookState: React.Dispatch<React.SetStateAction<GetModelsQueryVariables>> } & P>) {
-  return function C(props: any) {
+export type WithGetModelsProps = GetModelsQueryResult & { setHookState: React.Dispatch<React.SetStateAction<GetModelsQueryVariables>> }
+
+export function withGetModels<P>(WrappedComponent: ComponentType<WithGetModelsProps & P>) {
+  return function C(props: P) {
     const [state, setState] = useState<GetModelsQueryVariables>({ first: 60 });
     const query = useGetModelsQuery({ variables: state });
     return (<WrappedComponent {...query} {...props} setHookState={setState} />);
+  }
+}
+
+export type WithGetModelCursorsProps = GetModelCursorsQueryResult & { setCursorSize: React.Dispatch<React.SetStateAction<GetModelCursorsQueryVariables>> }
+
+export function withGetModelCursors<P>(WrappedComponent: ComponentType<WithGetModelCursorsProps & { size: number } & P>) {
+  return function C(props: P & { size: number }) {
+    const [state, setState] = useState<GetModelCursorsQueryVariables>({ size: props.size });
+    const query = useGetModelCursorsQuery({ variables: state });
+    return (<WrappedComponent {...query} {...props} setCursorSize={setState} />);
   }
 }

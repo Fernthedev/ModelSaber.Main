@@ -14,6 +14,7 @@ class ModelSaberEventEmitter extends EventEmitter {
         this.emit("loginEvent");
     }
 }
+
 interface ModelSaberEventEmitter {
     on(event: "loginEvent", listener: () => void): this;
     on(event: string, listener: Function): this;

@@ -1,5 +1,7 @@
 import "./index.scss"
 import "bootstrap-icons/font/bootstrap-icons.scss";
+import "@popperjs/core";
+import "bootstrap";
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
