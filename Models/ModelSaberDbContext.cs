@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -174,17 +175,25 @@ namespace ModelSaber.Database
     public static class DbSetExtensions
     {
         // ReSharper disable PossibleInvalidOperationException
-        public static Task<List<Model>> GetModelAsync(this DbSet<Model> models, int? first, Guid? createdAfter, TypeEnum? mType, CancellationToken cancellationToken) => 
-            Task.FromResult(models.IncludeModelData().OrderBy(t => t.Id).ToList()
+        public static Task<List<Model>> GetModelAsync(this DbSet<Model> models, int? first, Guid? createdAfter, string? filter, TypeEnum? mType, CancellationToken cancellationToken)
+        {
+            var regexs = string.IsNullOrWhiteSpace(filter) ? Array.Empty<Regex>() : filter.Split(' ').Select(t => new Regex(t, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToArray();
+            return Task.FromResult(models.IncludeModelData().OrderBy(t => t.Id).ToList()
+                .If(regexs.Any(), x => x.Select(t => new FilterRank<Model>(t, regexs, arg => arg.Name)).OrderByDescending(t => t.Counts).Where(t => t.PassCheck()).Select(t => t.Value))
                 .If(mType.HasValue, x => x.Where(t => t.Type == mType!.Value))
                 .If(createdAfter.HasValue, x => x.SkipWhile(y => y.Uuid != createdAfter!.Value).Skip(1))
                 .If(first.HasValue, x => x.Take(first!.Value)).ToList());
+        }
 
-        public static Task<List<Model>> GetModelReverseAsync(this DbSet<Model> models, int? last, Guid? createdBefore, TypeEnum? mType, CancellationToken cancellationToken) => 
-            Task.FromResult(models.IncludeModelData().OrderByDescending(t => t.Id).ToList()
+        public static Task<List<Model>> GetModelReverseAsync(this DbSet<Model> models, int? last, Guid? createdBefore, string? filter, TypeEnum? mType, CancellationToken cancellationToken)
+        {
+            var regexs = string.IsNullOrWhiteSpace(filter) ? Array.Empty<Regex>() : filter.Split(' ').Select(t => new Regex(t, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToArray();
+            return Task.FromResult(models.IncludeModelData().OrderByDescending(t => t.Id).ToList()
+                .If(regexs.Any(), x => x.Select(t => new FilterRank<Model>(t, regexs, arg => arg.Name)).OrderByDescending(t => t.Counts).Where(t => t.PassCheck()).Select(t => t.Value))
                 .If(mType.HasValue, x => x.Where(t => t.Type == mType!.Value))
                 .If(createdBefore.HasValue, x => x.SkipWhile(y => y.Uuid != createdBefore!.Value).Skip(1))
                 .If(last.HasValue, x => x.Take(last!.Value)).ToList());
+        }
 
         public static Task<bool> GetModelNextPageAsync(this DbSet<Model> models, CancellationToken cancellationToken, uint? id) => id.HasValue ?
             Task.FromResult(models.Any(t => t.Id > id.Value))
@@ -197,18 +206,26 @@ namespace ModelSaber.Database
         public static IQueryable<Model> IncludeModelData(this IQueryable<Model> models) => 
             models.Include(t => t.Tags).ThenInclude(t => t.Tag).Include(t => t.User).Include(t => t.Users).ThenInclude(t => t.User).ThenInclude(t => t.UserTags);
 
-        public static Task<List<Tag>> GetTagAsync(this DbSet<Tag> tags, int? first, Guid? createdAfter, CancellationToken cancellationToken) => 
-            Task.FromResult(tags.IncludeTagData().ToList()
+        public static Task<List<Tag>> GetTagAsync(this DbSet<Tag> tags, int? first, Guid? createdAfter, string? filter, CancellationToken cancellationToken)
+        {
+            var regexs = string.IsNullOrWhiteSpace(filter) ? Array.Empty<Regex>() : filter.Split(' ').Select(t => new Regex(t, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToArray();
+            return Task.FromResult(tags.IncludeTagData().OrderBy(t => t.Id).ToList()
+                .If(regexs.Any(), x => x.Select(t => new FilterRank<Tag>(t, regexs, arg => arg.Name)).OrderByDescending(t => t.Counts).Where(t => t.PassCheck()).Select(t => t.Value))
                 .If(createdAfter.HasValue, x => x.SkipWhile(y => y.CursorId != createdAfter!.Value).Skip(1))
                 .If(first.HasValue, x => x.Take(first!.Value)).ToList());
+        }
 
-        public static Task<List<Tag>> GetTagReverseAsync(this DbSet<Tag> tags, int? last, Guid? createdBefore, CancellationToken cancellationToken) => 
-            Task.FromResult(tags.IncludeTagData().OrderByDescending(t => t.Id).ToList()
+        public static Task<List<Tag>> GetTagReverseAsync(this DbSet<Tag> tags, int? last, Guid? createdBefore, string? filter, CancellationToken cancellationToken)
+        {
+            var regexs = string.IsNullOrWhiteSpace(filter) ? Array.Empty<Regex>() : filter.Split(' ').Select(t => new Regex(t, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToArray();
+            return Task.FromResult(tags.IncludeTagData().OrderByDescending(t => t.Id).ToList()
+                .If(regexs.Any(), x => x.Select(t => new FilterRank<Tag>(t, regexs, arg => arg.Name)).OrderByDescending(t => t.Counts).Where(t => t.PassCheck()).Select(t => t.Value))
                 .If(createdBefore.HasValue, x => x.SkipWhile(y => y.CursorId != createdBefore!.Value).Skip(1))
                 .If(last.HasValue, x => x.Take(last!.Value)).ToList());
+        }
 
         public static Task<bool> GetTagNextPageAsync(this DbSet<Tag> tags, CancellationToken cancellationToken, uint? id) => id.HasValue ?
-            Task.FromResult(tags.Any(t => t.Id < id.Value))
+            Task.FromResult(tags.Any(t => t.Id > id.Value))
             : Task.FromResult(false);
 
         public static Task<bool> GetTagPreviousPageAsync(this DbSet<Tag> tags, CancellationToken cancellationToken, uint? id) => id.HasValue ?

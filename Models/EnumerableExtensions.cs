@@ -21,5 +21,20 @@ namespace ModelSaber
 
             return condition ? action(enumerable) : enumerable;
         }
+
+        public static bool If<T>(this IEnumerable<T> enumerable, bool condition, Func<IEnumerable<T>, bool> action)
+        {
+            if (enumerable is null)
+            {
+                throw new ArgumentNullException(nameof(enumerable));
+            }
+
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            return condition && action(enumerable);
+        }
     }
 }

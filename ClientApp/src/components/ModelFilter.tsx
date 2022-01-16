@@ -1,21 +1,22 @@
 import React, { Component } from "react";
 import { withGetModelCursors, WithGetModelCursorsProps } from "../graphql";
 
-type ModelFilterProps = WithGetModelCursorsProps & ModelFilterState & { pageMove: (page: number, cursor: string) => void, setSize: (size: number) => void };
+type ModelFilterProps = WithGetModelCursorsProps & ModelFilterState & { pageMove: (page: number, cursor: string) => void, setSize: (size: number) => void, setFilter: (filter: string) => void };
 
 export interface ModelFilterState {
     size: number;
     page: number;
+    filter: string;
 }
 
 class ModelFilter extends Component<ModelFilterProps, ModelFilterState>{
     constructor(props: ModelFilterProps) {
         super(props);
-        this.state = { page: props.page, size: props.size };
+        this.state = { page: props.page, size: props.size, filter: props.filter };
     }
 
     componentWillReceiveProps(nextProps: Readonly<ModelFilterProps>, nextContext: any): void {
-        this.setState({ size: nextProps.size, page: nextProps.page })
+        this.setState({ size: nextProps.size, page: nextProps.page, filter: nextProps.filter });
     }
 
     updateSize(num: number) {
@@ -35,6 +36,14 @@ class ModelFilter extends Component<ModelFilterProps, ModelFilterState>{
 
     setNextPage() {
         this.props.pageMove(this.state.page, this.props.data.modelCursors[this.state.page - 1]);
+    }
+
+    updateFilter(target: HTMLInputElement) {
+        this.setState({ filter: target.value }, this.setFilter);
+    }
+
+    setFilter() {
+        this.props.setFilter(this.state.filter);
     }
 
     getPages() {
@@ -82,8 +91,8 @@ class ModelFilter extends Component<ModelFilterProps, ModelFilterState>{
 
     render() {
         if (this.props.loading) return (<></>);
-        return (<nav aria-label="Page navigation example">
-            <ul className="pagination">
+        return (<nav>
+            <ul className="pagination me-2">
                 <li className="page-item"><a className="page-link" href="#" onClick={() => this.updatePage(this.state.page - 1)}>Previous</a></li>
                 {this.getPages()}
                 <li className="page-item"><a className="page-link" href="#" onClick={() => this.updatePage(this.state.page + 1)}>Next</a></li>
@@ -101,6 +110,7 @@ class ModelFilter extends Component<ModelFilterProps, ModelFilterState>{
                     </div>
                 </li>
             </ul>
+            <input value={this.state.filter} onInput={(event) => this.updateFilter(event.currentTarget)} />
         </nav>);
     }
 }
