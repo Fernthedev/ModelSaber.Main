@@ -60,6 +60,7 @@ namespace ModelSaber.Main
                 app.UseHsts();
             }
 
+            app.UseMiddleware<OldLinkMiddleware>();
             app.UseMiddleware<JwtMiddleware>();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
