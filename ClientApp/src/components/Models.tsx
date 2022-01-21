@@ -37,6 +37,10 @@ export class Model extends Component<GetModelFullQueryResult & RouteComponentPro
 
     render() {
         if (this.props.loading) return (<></>);
+        if (!this.props.data) {
+            this.props.history.push("/");
+            return (<></>);
+        }
         let model = this.props.data.model;
         return !!model ?
             (<>

@@ -26,7 +26,7 @@ class Home extends Component<RouteComponentProps & WithGetModelsProps, ModelFilt
         console.log(this.props.data.models.pageInfo);
         return (<div>
             <h1 className="align-middle">
-                Welcome to ModelSaber
+                Welcome to ModelSaber <h5 style={{ display: "inline" }}><sub><sub style={{ textDecorationLine: "line-through", bottom: 4, opacity: 0.1 }}><i>(Destroyer of old links)</i></sub></sub></h5>
             </h1>
             <ModelFilter
                 filter={this.state.filter}
