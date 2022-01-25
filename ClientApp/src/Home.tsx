@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import Models from "./components/Models";
+import { ModelCard } from "./components/ModelCard";
 import { WithGetModelsProps, withGetModels } from "./graphql";
 import ModelFilter, { ModelFilterState } from "./components/ModelFilter";
 import { Loader } from "./components/Loader";
@@ -36,7 +36,7 @@ class Home extends Component<RouteComponentProps & WithGetModelsProps, ModelFilt
                 setSize={(size) => this.setState({ size: size }, this.loadMore)}
                 setFilter={(filter) => this.setState({ filter: filter }, this.loadMore)} />
             <div className="d-flex flex-wrap justify-content-between" style={{ margin: "0 -30px" }}>
-                {this.props.data.models.items.map(model => (<Models.ModelCard key={model.uuid} {...model} navigate={this.nextPath} />))}
+                {this.props.data.models.items.map(model => (<ModelCard key={model.uuid} {...model} navigate={this.nextPath} />))}
             </div>
             <ModelFilter
                 filter={this.state.filter}

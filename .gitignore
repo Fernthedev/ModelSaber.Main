@@ -352,3 +352,4 @@ MigrationBackup/
 # ignore css as we use scss
 /wwwroot/css
 /ClientApp/public/images
+/ClientApp/build

@@ -21,9 +21,15 @@ namespace ModelSaber.Main
         public static void Main(string[] args)
         {
             CompiledTime = Assembly.GetExecutingAssembly().GetLinkerTime();
-            var webhookUrl = Environment.GetEnvironmentVariable("DISCORD_WEBHOOK_URL", EnvironmentVariableTarget.User);
-            if (string.IsNullOrWhiteSpace(webhookUrl)) throw new Exception("DISCORD_WEBHOOK_URL cannot be null and must be set.");
-            DiscordClient = new DiscordWebhookClient(webhookUrl);
+            #if DEBUG
+            var envTarget = EnvironmentVariableTarget.User;
+            #else 
+            var envTarget = EnvironmentVariableTarget.Process;
+            #endif
+            //TODO fix this for linux as it seems to not grab environment variables for some reason
+            //var webhookUrl = Environment.GetEnvironmentVariable("DISCORD_WEBHOOK_URL", envTarget);
+            //if (string.IsNullOrWhiteSpace(webhookUrl)) throw new Exception("DISCORD_WEBHOOK_URL cannot be null and must be set.");
+            //DiscordClient = new DiscordWebhookClient(webhookUrl);
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -31,6 +37,9 @@ namespace ModelSaber.Main
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    #if RELEASE
+                    webBuilder.UseUrls("http://localhost:6000");
+                    #endif
                     webBuilder.UseStartup<Startup>();
                 });
     }

@@ -39,6 +39,8 @@ namespace ModelSaber.Main
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddScoped<IUserService, UserService>();
 
+            services.AddResponseCompression();
+
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -65,6 +67,7 @@ namespace ModelSaber.Main
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseResponseCompression();
 
             app.UseRouting();
 

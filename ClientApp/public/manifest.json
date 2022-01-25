@@ -1,0 +1,15 @@
+{
+    "short_name": "ModelSaber",
+    "name": "ModelSaber",
+    "icons": [
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "./index.html",
+    "display": "standalone",
+    "theme_color": "#e9ecef",
+    "background_color": "#444444"
+}

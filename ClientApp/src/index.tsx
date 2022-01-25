@@ -1,8 +1,8 @@
+import React, { Component, lazy } from "react";
 import "./index.scss"
 import "bootstrap-icons/font/bootstrap-icons.scss";
 import "@popperjs/core";
 import "bootstrap";
-import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
@@ -12,8 +12,9 @@ import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const rootElement = document.getElementById("root");
 const loaderbackground = document.getElementById("lds-roller");
+const uri = process.env.NODE_ENV == "development" ? process.env.REACT_APP_API_URL : "https://apimodelsaber.rainemods.io";
 const client = new ApolloClient({
-    uri: process.env.REACT_APP_API_URL + "/graphql",
+    uri: uri + "/graphql",
     cache: new InMemoryCache()
 });
 class Index extends Component {
