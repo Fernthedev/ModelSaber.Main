@@ -21,6 +21,8 @@ namespace ModelSaber.Database
         public DbSet<Vote> Votes { get; set; } = null!;
         public DbSet<UserLogons> Logons { get; set; } = null!;
         public DbSet<UserTags> UserTags { get; set; } = null!;
+        public DbSet<OAuthClient> OAuthClients { get; set; } = null!;
+        public DbSet<OAuthToken> OAuthTokens { get; set; } = null!;
 
         public ModelSaberDbContext(DbContextOptions<ModelSaberDbContext> options) : base(options)
         {
@@ -153,6 +155,24 @@ namespace ModelSaber.Database
                 entity.HasOne(e => e.User)
                     .WithMany(e => e.UserTags)
                     .HasForeignKey(e => e.UserId);
+            });
+
+            modelBuilder.Entity<OAuthClient>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasMany(e => e.Tokens)
+                    .WithOne(e => e.Client)
+                    .HasForeignKey(e => e.ClientId);
+            });
+
+            modelBuilder.Entity<OAuthToken>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Client)
+                    .WithMany(e => e.Tokens)
+                    .HasForeignKey(e => e.ClientId);
             });
         }
 

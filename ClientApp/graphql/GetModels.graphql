@@ -1,5 +1,5 @@
-query GetModels($first: Int, $after: String, $nameFilter: String) {
-    models(first: $first, after: $after, nameFilter: $nameFilter) {
+query GetModels($first: Int, $after: String, $nameFilter: String, $modelType: TypeEnum) {
+    models(first: $first, after: $after, nameFilter: $nameFilter, modelType: $modelType) {
         items {
             ...Model
         }

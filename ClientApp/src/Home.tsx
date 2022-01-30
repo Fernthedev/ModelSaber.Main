@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import { ModelCard } from "./components/ModelCard";
+import { ModelCard } from "./components/model/ModelCard";
 import { WithGetModelsProps, withGetModels } from "./graphql";
-import ModelFilter, { ModelFilterState } from "./components/ModelFilter";
+import ModelFilter, { ModelFilterState } from "./components/model/ModelFilter";
 import { Loader } from "./components/Loader";
 
 class Home extends Component<RouteComponentProps & WithGetModelsProps, ModelFilterState & { cursor: string | null }> {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withGetModelCursors, WithGetModelCursorsProps } from "../graphql";
+import { withGetModelCursors, WithGetModelCursorsProps } from "../../graphql";
 
 type ModelFilterProps = WithGetModelCursorsProps & ModelFilterState & { pageMove: (page: number, cursor: string) => void, setSize: (size: number) => void, setFilter: (filter: string) => void };
 

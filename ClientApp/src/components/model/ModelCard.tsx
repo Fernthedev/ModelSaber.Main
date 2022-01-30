@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { ModelFragment } from "../graphqlTypes";
-import { getTumbnail } from "./getTumbnail";
+import { ModelFragment } from "../../graphqlTypes";
+import { getTumbnail } from "../getTumbnail";
 
 export class ModelCard extends Component<ModelFragment & { navigate: (path: string) => void; }> {
     vidRef: React.RefObject<HTMLVideoElement>;

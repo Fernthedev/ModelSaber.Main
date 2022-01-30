@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
-import { withGetModelFull } from "../graphql";
-import { GetModelFullQueryResult } from "../graphqlTypes";
-import { getTumbnail } from "./getTumbnail";
+import { withGetModelFull } from "../../graphql";
+import { GetModelFullQueryResult } from "../../graphqlTypes";
+import { getTumbnail } from "../getTumbnail";
 
 export class Model extends Component<GetModelFullQueryResult & RouteComponentProps<{ id: string }>> {
     vidRef: React.RefObject<HTMLVideoElement>;
