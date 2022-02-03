@@ -36,6 +36,7 @@ Learn how to configure a non-root public URL by running `npm run build`.
             background-attachment: fixed;
             background-size: 23040px 1440px;
             background-position-y: center;
+            min-height: 100vh;
             /*Minify the scrollbar on firefox*/
             /* scrollbar-width: thin; */
         }
@@ -56,6 +57,9 @@ Learn how to configure a non-root public URL by running `npm run build`.
 
         #root {
             transition: opacity 1s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .lds-roller-main {

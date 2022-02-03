@@ -16,11 +16,14 @@ namespace ModelSaber.Main
     public class Program
     {
         public static DateTime CompiledTime { get; private set; }
+        public static Version Version { get; private set; } = null!;
         public static DiscordWebhookClient DiscordClient { get; private set; } = null!;
 
         public static void Main(string[] args)
         {
-            CompiledTime = Assembly.GetExecutingAssembly().GetLinkerTime();
+            var executingAsm = Assembly.GetExecutingAssembly();
+            CompiledTime = executingAsm.GetLinkerTime();
+            Version = executingAsm.GetName().Version ?? new Version(0,0,420,69);
             #if DEBUG
             var envTarget = EnvironmentVariableTarget.User;
             #else 
