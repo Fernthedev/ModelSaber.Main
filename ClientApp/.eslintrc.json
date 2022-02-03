@@ -1,0 +1,19 @@
+{
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended"
+    ],
+    "rules": {
+        "jsx-a11y/anchor-is-valid": "off",
+        "no-var": "off",
+        "react/no-deprecated": "off",
+        "prefer-const": "off",
+        "no-extra-boolean-cast": "off",
+        "react/jsx-no-target-blank": "off",
+        "@typescript-eslint/ban-types": "off",
+        "react/jsx-key": "warn",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off"
+    }
+}

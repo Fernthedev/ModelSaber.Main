@@ -15,7 +15,7 @@ class ModelFilter extends Component<ModelFilterProps, ModelFilterState>{
         this.state = { page: props.page, size: props.size, filter: props.filter };
     }
 
-    componentWillReceiveProps(nextProps: Readonly<ModelFilterProps>, nextContext: any): void {
+    componentWillReceiveProps(nextProps: Readonly<ModelFilterProps>): void {
         this.setState({ size: nextProps.size, page: nextProps.page, filter: nextProps.filter });
     }
 
@@ -71,19 +71,19 @@ class ModelFilter extends Component<ModelFilterProps, ModelFilterState>{
             userPagesMiddle = userPagesFirst;
         }
         return (<>
-            {userPagesStart.length > 0 ? userPagesStart.map(f => (<li className={"page-item" + (this.state.page === f ? " active" : "")}>
+            {userPagesStart.length > 0 ? userPagesStart.map(f => (<li key={f} className={"page-item" + (this.state.page === f ? " active" : "")}>
                 <a className="page-link" href="#" key={f} onClick={() => this.updatePage(f)}>{f}</a>
             </li>)) : null}
             {userPagesStart.length > 0 ? (<li className="page-item disabled">
                 <span className="page-link">...</span>
             </li>) : null}
-            {userPagesMiddle.length > 0 ? userPagesMiddle.map(f => (<li className={"page-item" + (this.state.page === f ? " active" : "")}>
+            {userPagesMiddle.length > 0 ? userPagesMiddle.map(f => (<li key={f} className={"page-item" + (this.state.page === f ? " active" : "")}>
                 <a className="page-link" href="#" key={f} onClick={() => this.updatePage(f)}>{f}</a>
             </li>)) : null}
             {userPagesMiddle.length > 0 ? (<li className="page-item disabled">
                 <span className="page-link">...</span>
             </li>) : null}
-            {userPagesEnd.length > 0 ? userPagesEnd.map(f => (<li className={"page-item" + (this.state.page === f ? " active" : "")}>
+            {userPagesEnd.length > 0 ? userPagesEnd.map(f => (<li key={f} className={"page-item" + (this.state.page === f ? " active" : "")}>
                 <a className="page-link" href="#" key={f} onClick={() => this.updatePage(f)}>{f}</a>
             </li>)) : null}
         </>);

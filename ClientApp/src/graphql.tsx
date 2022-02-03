@@ -1,4 +1,4 @@
-import { GetModelCursorsQueryResult, GetModelCursorsQueryVariables, GetModelFullQueryResult, GetModelsQueryResult, GetModelsQueryVariables, ModelSaberQuery, useGetModelCursorsQuery, useGetModelFullQuery, useGetModelsQuery } from "./graphqlTypes";
+import { GetModelCursorsQueryResult, GetModelCursorsQueryVariables, GetModelFullQueryResult, GetModelsQueryResult, GetModelsQueryVariables, useGetModelCursorsQuery, useGetModelFullQuery, useGetModelsQuery } from "./graphqlTypes";
 import React, { ComponentType, useState } from "react";
 import { RouteComponentProps } from "react-router";
 
