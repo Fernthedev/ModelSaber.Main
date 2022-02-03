@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ModelSaber.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ModelSaber.Main.Migrations
 {
     [DbContext(typeof(ModelSaberDbContext))]
-    partial class ModelSaberDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220201091623_Add-OAuth-Client-Name")]
+    partial class AddOAuthClientName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,15 +207,8 @@ namespace ModelSaber.Main.Migrations
                         .HasColumnType("bytea")
                         .HasColumnName("sec_key");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
                     b.HasKey("Id")
                         .HasName("pk_o_auth_clients");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_o_auth_clients_user_id");
 
                     b.ToTable("o_auth_clients", (string)null);
                 });
@@ -253,18 +248,11 @@ namespace ModelSaber.Main.Migrations
                         .HasColumnType("bytea")
                         .HasColumnName("token");
 
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
                     b.HasKey("Id")
                         .HasName("pk_o_auth_tokens");
 
                     b.HasIndex("ClientId")
                         .HasDatabaseName("ix_o_auth_tokens_client_id");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_o_auth_tokens_user_id");
 
                     b.ToTable("o_auth_tokens", (string)null);
                 });
@@ -488,18 +476,6 @@ namespace ModelSaber.Main.Migrations
                     b.Navigation("ParentModel");
                 });
 
-            modelBuilder.Entity("ModelSaber.Models.OAuthClient", b =>
-                {
-                    b.HasOne("ModelSaber.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_o_auth_clients_users_user_id");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ModelSaber.Models.OAuthToken", b =>
                 {
                     b.HasOne("ModelSaber.Models.OAuthClient", "Client")
@@ -509,14 +485,7 @@ namespace ModelSaber.Main.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_o_auth_tokens_o_auth_clients_client_id");
 
-                    b.HasOne("ModelSaber.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("fk_o_auth_tokens_users_user_id");
-
                     b.Navigation("Client");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ModelSaber.Models.UserLogons", b =>

@@ -31,7 +31,7 @@ namespace ModelSaber.Main.Helpers
             {
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
             }
-            else if (needAdmin /* TODO add back admin check */ /* && user.IsAdmin != needAdmin */)
+            else if (needAdmin && user.Level != UserLevel.Admin)
             {
                 context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
             }

@@ -16,7 +16,7 @@ namespace ModelSaber.Main.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    client_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    client_id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     client_secret = table.Column<string>(type: "text", nullable: false),
                     sec_key = table.Column<byte[]>(type: "bytea", nullable: false),
                     redirect_uri = table.Column<string>(type: "text", nullable: true),
@@ -35,7 +35,7 @@ namespace ModelSaber.Main.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     client_id = table.Column<long>(type: "bigint", nullable: false),
                     token = table.Column<byte[]>(type: "bytea", nullable: false),
-                    inserted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    inserted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
                     expires_in = table.Column<long>(type: "bigint", nullable: false),
                     refresh = table.Column<byte[]>(type: "bytea", nullable: false),
                     scope = table.Column<string>(type: "text", nullable: true)

@@ -24,6 +24,11 @@ namespace ModelSaber.Database
         public DbSet<OAuthClient> OAuthClients { get; set; } = null!;
         public DbSet<OAuthToken> OAuthTokens { get; set; } = null!;
 
+        public ModelSaberDbContext() : this(new DbContextOptions<ModelSaberDbContext>())
+        {
+
+        }
+
         public ModelSaberDbContext(DbContextOptions<ModelSaberDbContext> options) : base(options)
         {
 
