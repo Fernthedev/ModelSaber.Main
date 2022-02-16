@@ -14,7 +14,7 @@ export type WithGetModelsProps = GetModelsQueryResult & { setHookState: React.Di
 
 export function withGetModels<P>(WrappedComponent: ComponentType<WithGetModelsProps & P>) {
   return function C(props: P) {
-    const [state, setState] = useState<GetModelsQueryVariables>({ first: 60 });
+    const [state, setState] = useState<GetModelsQueryVariables>({ first: 10 });
     const query = useGetModelsQuery({ variables: state });
     return (<WrappedComponent {...query} {...props} setHookState={setState} />);
   }

@@ -49,7 +49,6 @@ export class ModelCard extends Component<ModelFragment & { navigate: (path: stri
             <div className="card-header" style={{ position: "relative" }}>
                 <div style={{ width: 259, height: 259 }}>
                     {getTumbnail(this.props, this.vidRef, this.imgRef, this.fixWoopsieDaisy, { width: 259, height: 259, margin: "-0.5rem -1rem" })}
-
                 </div>
                 <h4 className="mt-3">
                     {this.props.name}
@@ -70,10 +69,10 @@ export class ModelCard extends Component<ModelFragment & { navigate: (path: stri
                     Users:
                     <br />
                     {this.props.users.map((t, i, a) => {
-                        return (<>
+                        return (<label key={t.id}>
                             <a href="#" className="link-primary" style={{ textDecoration: "none" }}>{t.name}</a>
                             {(i + 1) < a.length ? " & " : ""}
-                        </>);
+                        </label>);
                     })}
                 </div>
             </div>
@@ -81,7 +80,7 @@ export class ModelCard extends Component<ModelFragment & { navigate: (path: stri
                 <div className="row" style={{ margin: "-0.5rem -1rem" }}>
                     <a href="#" className="col-4 btn btn-sm btn-outline-light" style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0, borderTopLeftRadius: 0 }}>Install</a>
                     <a href="#" className="col-4 btn btn-sm btn-outline-light" style={{ borderRadius: 0, borderLeft: 0, borderRight: 0 }}>Download</a>
-                    <button className="col-4 btn btn-sm btn-outline-light" style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0 }} onClick={() => this.props.navigate(`/model/${this.props.uuid}`)}>Show</button>
+                    <button className="col-4 btn btn-sm btn-outline-light" style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0 }} onClick={() => this.props.navigate(`/model/${this.props.cursor}`)}>Show</button>
                 </div>
             </div>
         </div>);

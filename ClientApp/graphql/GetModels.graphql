@@ -16,9 +16,11 @@ fragment Model on ModelType {
     name
     status
     platform
+    cursor
     users {
         name
         discordId
+        id
     }
     tags {
         name

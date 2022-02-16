@@ -6,7 +6,8 @@ import EventEmitter from "events";
 const Developer = lazy(() => import("./components/Developers"));
 const Contributions = lazy(() => import("./components/Contributions"));
 const Home = lazy(() => import("./Home"));
-const Models = lazy(() => import("./components/model/Model"));
+const Model = lazy(() => import("./components/model/Model"));
+const Models = lazy(() => import("./components/model/Models"));
 const Login = lazy(() => import("./components/Login"));
 const Logout = lazy(() => import("./components/Logout"));
 
@@ -29,11 +30,12 @@ export default class App extends Component {
         return (
             <Layout>
                 <Route exact path="/" component={Home} />
+                <Route exact path="/models" component={Models} />
                 <Route path="/contributions" component={Contributions} />
                 <Route path="/dev" component={Developer} />
                 <Route exact path="/discordlogin" component={Login} />
                 <Route exact path="/logout" component={Logout} />
-                <Route exact path="/model/:id" component={Models} />
+                <Route exact path="/model/:id" component={Model} />
             </Layout>
         )
     }

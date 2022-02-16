@@ -13,8 +13,11 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Byte: any;
   /** The `DateTime` scalar type represents a date and time. `DateTime` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard. */
   DateTime: any;
+  UInt: any;
+  /** Stringed representation of ulong due to javascript cant handle 64 bit large integers without derping */
   UInt64: any;
 };
 
@@ -40,6 +43,17 @@ export type ModelEdge = {
   node?: Maybe<ModelType>;
 };
 
+export type ModelSaberMutation = {
+  __typename?: 'ModelSaberMutation';
+  /** Modifies votes for a model. */
+  vote?: Maybe<Scalars['Int']>;
+};
+
+
+export type ModelSaberMutationVoteArgs = {
+  voteArgs: VoteInputType;
+};
+
 export type ModelSaberQuery = {
   __typename?: 'ModelSaberQuery';
   /** Single model */
@@ -56,7 +70,7 @@ export type ModelSaberQuery = {
 
 
 export type ModelSaberQueryModelArgs = {
-  id: Scalars['ID'];
+  id: Scalars['String'];
 };
 
 
@@ -71,6 +85,7 @@ export type ModelSaberQueryModelsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   modelType?: InputMaybe<TypeEnum>;
+  nameFilter?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -79,15 +94,17 @@ export type ModelSaberQueryTagsArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  nameFilter?: InputMaybe<Scalars['String']>;
 };
 
 export type ModelType = {
   __typename?: 'ModelType';
+  cursor: Scalars['String'];
   date?: Maybe<Scalars['DateTime']>;
   description?: Maybe<Scalars['String']>;
   downloadPath: Scalars['String'];
   hash?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  id: Scalars['UInt'];
   mainUser?: Maybe<UserType>;
   name: Scalars['String'];
   platform?: Maybe<Platform>;
@@ -159,7 +176,7 @@ export type TagEdge = {
 
 export type TagType = {
   __typename?: 'TagType';
-  id: Scalars['Int'];
+  id: Scalars['UInt'];
   /** Model list */
   models?: Maybe<ModelConnection>;
   name: Scalars['String'];
@@ -205,6 +222,7 @@ export type UserType = {
   avatar?: Maybe<Scalars['String']>;
   bSaber?: Maybe<Scalars['String']>;
   discordId?: Maybe<Scalars['UInt64']>;
+  id: Scalars['UInt'];
   level?: Maybe<UserLevel>;
   /** Model list */
   models?: Maybe<ModelConnection>;
@@ -220,12 +238,19 @@ export type UserTypeModelsArgs = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
+export type VoteInputType = {
+  id: Scalars['String'];
+  modelId: Scalars['UInt'];
+  platform: Scalars['String'];
+  vote: Scalars['Byte'];
+};
+
 export type GetModelFullQueryVariables = Exact<{
-  modelId: Scalars['ID'];
+  modelId: Scalars['String'];
 }>;
 
 
-export type GetModelFullQuery = { __typename?: 'ModelSaberQuery', model?: { __typename?: 'ModelType', uuid: string, name: string, status?: Status | null | undefined, platform?: Platform | null | undefined, type?: TypeEnum | null | undefined, description?: string | null | undefined, thumbnail: string, downloadPath: string, users?: Array<{ __typename?: 'UserType', name?: string | null | undefined, discordId?: any | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ __typename?: 'TagType', name: string, id: number } | null | undefined> | null | undefined } | null | undefined };
+export type GetModelFullQuery = { __typename?: 'ModelSaberQuery', model?: { __typename?: 'ModelType', uuid: string, name: string, status?: Status | null | undefined, platform?: Platform | null | undefined, type?: TypeEnum | null | undefined, description?: string | null | undefined, thumbnail: string, downloadPath: string, users?: Array<{ __typename?: 'UserType', name?: string | null | undefined, discordId?: any | null | undefined, id: any } | null | undefined> | null | undefined, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null | undefined> | null | undefined } | null | undefined };
 
 export type GetModelCursorsQueryVariables = Exact<{
   size?: InputMaybe<Scalars['Int']>;
@@ -237,12 +262,14 @@ export type GetModelCursorsQuery = { __typename?: 'ModelSaberQuery', modelCursor
 export type GetModelsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
   after?: InputMaybe<Scalars['String']>;
+  nameFilter?: InputMaybe<Scalars['String']>;
+  modelType?: InputMaybe<TypeEnum>;
 }>;
 
 
-export type GetModelsQuery = { __typename?: 'ModelSaberQuery', models?: { __typename?: 'ModelConnection', items?: Array<{ __typename?: 'ModelType', uuid: string, name: string, status?: Status | null | undefined, platform?: Platform | null | undefined, thumbnail: string, users?: Array<{ __typename?: 'UserType', name?: string | null | undefined, discordId?: any | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ __typename?: 'TagType', name: string, id: number } | null | undefined> | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null | undefined, hasNextPage: boolean, hasPreviousPage: boolean } } | null | undefined };
+export type GetModelsQuery = { __typename?: 'ModelSaberQuery', models?: { __typename?: 'ModelConnection', items?: Array<{ __typename?: 'ModelType', uuid: string, name: string, status?: Status | null | undefined, platform?: Platform | null | undefined, cursor: string, thumbnail: string, users?: Array<{ __typename?: 'UserType', name?: string | null | undefined, discordId?: any | null | undefined, id: any } | null | undefined> | null | undefined, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null | undefined> | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null | undefined, hasNextPage: boolean, hasPreviousPage: boolean } } | null | undefined };
 
-export type ModelFragment = { __typename?: 'ModelType', uuid: string, name: string, status?: Status | null | undefined, platform?: Platform | null | undefined, thumbnail: string, users?: Array<{ __typename?: 'UserType', name?: string | null | undefined, discordId?: any | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ __typename?: 'TagType', name: string, id: number } | null | undefined> | null | undefined };
+export type ModelFragment = { __typename?: 'ModelType', uuid: string, name: string, status?: Status | null | undefined, platform?: Platform | null | undefined, cursor: string, thumbnail: string, users?: Array<{ __typename?: 'UserType', name?: string | null | undefined, discordId?: any | null | undefined, id: any } | null | undefined> | null | undefined, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null | undefined> | null | undefined };
 
 export const ModelFragmentDoc = gql`
     fragment Model on ModelType {
@@ -250,9 +277,11 @@ export const ModelFragmentDoc = gql`
   name
   status
   platform
+  cursor
   users {
     name
     discordId
+    id
   }
   tags {
     name
@@ -262,7 +291,7 @@ export const ModelFragmentDoc = gql`
 }
     `;
 export const GetModelFullDocument = gql`
-    query GetModelFull($modelId: ID!) {
+    query GetModelFull($modelId: String!) {
   model(id: $modelId) {
     uuid
     name
@@ -273,6 +302,7 @@ export const GetModelFullDocument = gql`
     users {
       name
       discordId
+      id
     }
     tags {
       name
@@ -345,8 +375,13 @@ export type GetModelCursorsQueryHookResult = ReturnType<typeof useGetModelCursor
 export type GetModelCursorsLazyQueryHookResult = ReturnType<typeof useGetModelCursorsLazyQuery>;
 export type GetModelCursorsQueryResult = Apollo.QueryResult<GetModelCursorsQuery, GetModelCursorsQueryVariables>;
 export const GetModelsDocument = gql`
-    query GetModels($first: Int, $after: String) {
-  models(first: $first, after: $after) {
+    query GetModels($first: Int, $after: String, $nameFilter: String, $modelType: TypeEnum) {
+  models(
+    first: $first
+    after: $after
+    nameFilter: $nameFilter
+    modelType: $modelType
+  ) {
     items {
       ...Model
     }
@@ -373,6 +408,8 @@ export const GetModelsDocument = gql`
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
+ *      nameFilter: // value for 'nameFilter'
+ *      modelType: // value for 'modelType'
  *   },
  * });
  */

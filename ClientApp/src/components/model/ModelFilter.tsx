@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { withGetModelCursors, WithGetModelCursorsProps } from "../../graphql";
+import React from "react";
+import { useGetModelCursorsQuery } from "../../graphqlTypes";
 
-type ModelFilterProps = WithGetModelCursorsProps & ModelFilterState & { pageMove: (page: number, cursor: string) => void, setSize: (size: number) => void, setFilter: (filter: string) => void };
+type ModelFilterProps = ModelFilterState & { pageMove: (page: number, cursor: string) => void, setSize: (size: number) => void, setFilter: (filter: string) => void };
 
 export interface ModelFilterState {
     size: number;
@@ -9,56 +9,44 @@ export interface ModelFilterState {
     filter: string;
 }
 
-class ModelFilter extends Component<ModelFilterProps, ModelFilterState>{
-    constructor(props: ModelFilterProps) {
-        super(props);
-        this.state = { page: props.page, size: props.size, filter: props.filter };
+function ModelFilterFunc(props: ModelFilterProps) {
+    const page = props.page;
+    const size = props.size;
+    const filter = props.filter;
+    const { data, loading, error } = useGetModelCursorsQuery({ variables: { size: size } });
+
+    if (loading) return (<></>);
+
+    const cursors = ["", ...data.modelCursors];
+
+    function updateSize(s: number) {
+        props.setSize(s);
     }
 
-    componentWillReceiveProps(nextProps: Readonly<ModelFilterProps>): void {
-        this.setState({ size: nextProps.size, page: nextProps.page, filter: nextProps.filter });
+    function updatePage(p: number) {
+        if (p > cursors.length) p = 1;
+        else if (p < 1) p = cursors.length;
+
+        props.pageMove(p - 1, cursors[p - 1]);
     }
 
-    updateSize(num: number) {
-        this.setState({ size: num }, this.setNextSize);
+    function updateFilter(f: string) {
+        props.setFilter(f);
     }
 
-    setNextSize() {
-        this.props.setCursorSize({ size: this.state.size });
-        this.props.setSize(this.state.size);
-    }
-
-    updatePage(num: number) {
-        if (num > this.props.data.modelCursors.length) this.setState({ page: 1 }, this.setNextPage);
-        else if (num < 1) this.setState({ page: this.props.data.modelCursors.length }, this.setNextPage);
-        else this.setState({ page: num }, this.setNextPage);
-    }
-
-    setNextPage() {
-        this.props.pageMove(this.state.page, this.props.data.modelCursors[this.state.page - 1]);
-    }
-
-    updateFilter(target: HTMLInputElement) {
-        this.setState({ filter: target.value }, this.setFilter);
-    }
-
-    setFilter() {
-        this.props.setFilter(this.state.filter);
-    }
-
-    getPages() {
-        var userPagesFirst = Array(this.props.data.modelCursors.length).fill(null).map((_, i) => i + 1);
+    function getPages(length: number) {
+        var userPagesFirst = Array(length).fill(null).map((_, i) => i + 1);
         var userPagesStart: number[] = [];
         var userPagesMiddle: number[] = [];
         var userPagesEnd: number[] = [];
         if (userPagesFirst.length > 8) {
-            if (this.state.page > 5) {
+            if (page > 5) {
                 userPagesStart = [userPagesFirst[0]];
-                if (userPagesFirst.length < this.state.page + 5) {
+                if (userPagesFirst.length < page + 5) {
                     userPagesEnd = userPagesFirst.slice(userPagesFirst.length - 7, userPagesFirst.length);
                 }
                 else {
-                    userPagesMiddle = userPagesFirst.slice(this.state.page - 3, 4 + (this.state.page - 2));
+                    userPagesMiddle = userPagesFirst.slice(page - 3, 4 + (page - 2));
                     userPagesEnd = [userPagesFirst.pop()];
                 }
             }
@@ -71,48 +59,47 @@ class ModelFilter extends Component<ModelFilterProps, ModelFilterState>{
             userPagesMiddle = userPagesFirst;
         }
         return (<>
-            {userPagesStart.length > 0 ? userPagesStart.map(f => (<li key={f} className={"page-item" + (this.state.page === f ? " active" : "")}>
-                <a className="page-link" href="#" key={f} onClick={() => this.updatePage(f)}>{f}</a>
+            {userPagesStart.length > 0 ? userPagesStart.map(f => (<li key={f} className={"page-item" + (page === f ? " active" : "")}>
+                <a className="page-link" href="#" key={f} onClick={() => updatePage(f)}>{f}</a>
             </li>)) : null}
             {userPagesStart.length > 0 ? (<li className="page-item disabled">
                 <span className="page-link">...</span>
             </li>) : null}
-            {userPagesMiddle.length > 0 ? userPagesMiddle.map(f => (<li key={f} className={"page-item" + (this.state.page === f ? " active" : "")}>
-                <a className="page-link" href="#" key={f} onClick={() => this.updatePage(f)}>{f}</a>
+            {userPagesMiddle.length > 0 ? userPagesMiddle.map(f => (<li key={f} className={"page-item" + (page === f ? " active" : "")}>
+                <a className="page-link" href="#" key={f} onClick={() => updatePage(f)}>{f}</a>
             </li>)) : null}
             {userPagesMiddle.length > 0 ? (<li className="page-item disabled">
                 <span className="page-link">...</span>
             </li>) : null}
-            {userPagesEnd.length > 0 ? userPagesEnd.map(f => (<li key={f} className={"page-item" + (this.state.page === f ? " active" : "")}>
-                <a className="page-link" href="#" key={f} onClick={() => this.updatePage(f)}>{f}</a>
+            {userPagesEnd.length > 0 ? userPagesEnd.map(f => (<li key={f} className={"page-item" + (page === f ? " active" : "")}>
+                <a className="page-link" href="#" key={f} onClick={() => updatePage(f)}>{f}</a>
             </li>)) : null}
         </>);
     }
 
-    render() {
-        if (this.props.loading) return (<></>);
-        return (<nav>
+    return (
+        <nav>
             <ul className="pagination me-2">
-                <li className="page-item"><a className="page-link" href="#" onClick={() => this.updatePage(this.state.page - 1)}>Previous</a></li>
-                {this.getPages()}
-                <li className="page-item"><a className="page-link" href="#" onClick={() => this.updatePage(this.state.page + 1)}>Next</a></li>
+                <li className="page-item"><a className="page-link" href="#" onClick={() => updatePage(page - 1)}>Previous</a></li>
+                {getPages(cursors.length)}
+                <li className="page-item"><a className="page-link" href="#" onClick={() => updatePage(page + 1)}>Next</a></li>
                 <li className="page-item">
                     <div className="dropdown">
                         <button className="btn btn-secondary dropdown-toggle" type="button" id="pageSizeDropdown" data-bs-toggle="dropdown" aria-expanded="false">Page Size</button>
                         <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="pageSizeDropdown">
-                            <li><a className={"dropdown-item" + (this.state.size === 10 ? " active" : "")} href="#" onClick={() => this.updateSize(10)}>10</a></li>
-                            <li><a className={"dropdown-item" + (this.state.size === 20 ? " active" : "")} href="#" onClick={() => this.updateSize(20)}>20</a></li>
-                            <li><a className={"dropdown-item" + (this.state.size === 40 ? " active" : "")} href="#" onClick={() => this.updateSize(40)}>40</a></li>
-                            <li><a className={"dropdown-item" + (this.state.size === 60 ? " active" : "")} href="#" onClick={() => this.updateSize(60)}>60</a></li>
-                            <li><a className={"dropdown-item" + (this.state.size === 80 ? " active" : "")} href="#" onClick={() => this.updateSize(80)}>80</a></li>
-                            <li><a className={"dropdown-item" + (this.state.size === 100 ? " active" : "")} href="#" onClick={() => this.updateSize(100)}>100</a></li>
+                            <li><a className={"dropdown-item" + (size === 10 ? " active" : "")} href="#" onClick={() => updateSize(10)}>10</a></li>
+                            <li><a className={"dropdown-item" + (size === 20 ? " active" : "")} href="#" onClick={() => updateSize(20)}>20</a></li>
+                            <li><a className={"dropdown-item" + (size === 40 ? " active" : "")} href="#" onClick={() => updateSize(40)}>40</a></li>
+                            <li><a className={"dropdown-item" + (size === 60 ? " active" : "")} href="#" onClick={() => updateSize(60)}>60</a></li>
+                            <li><a className={"dropdown-item" + (size === 80 ? " active" : "")} href="#" onClick={() => updateSize(80)}>80</a></li>
+                            <li><a className={"dropdown-item" + (size === 100 ? " active" : "")} href="#" onClick={() => updateSize(100)}>100</a></li>
                         </ul>
                     </div>
                 </li>
             </ul>
-            <input value={this.state.filter} onInput={(event) => this.updateFilter(event.currentTarget)} />
-        </nav>);
-    }
+            <input value={filter} onInput={(event) => updateFilter(event.currentTarget.value)} />
+        </nav>
+    );
 }
 
-export default withGetModelCursors(ModelFilter);
+export default ModelFilterFunc;

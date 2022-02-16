@@ -1,20 +1,11 @@
 import React, { Component } from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import { ModelCard } from "./components/model/ModelCard";
-import { WithGetModelsProps, withGetModels } from "./graphql";
-import ModelFilter, { ModelFilterState } from "./components/model/ModelFilter";
-import { Loader } from "./components/Loader";
+import Models from "./components/model/Models";
 
-class Home extends Component<RouteComponentProps & WithGetModelsProps, ModelFilterState & { cursor: string | null }> {
+class Home extends Component<RouteComponentProps> {
     constructor(props: any) {
         super(props);
-        this.loadMore = this.loadMore.bind(this);
         this.nextPath = this.nextPath.bind(this);
-        this.state = { page: 1, size: 60, cursor: null, filter: "" };
-    }
-
-    loadMore() {
-        this.props.setHookState({ after: this.state.cursor, first: this.state.size });
     }
 
     nextPath(path: string) {
@@ -22,31 +13,13 @@ class Home extends Component<RouteComponentProps & WithGetModelsProps, ModelFilt
     }
 
     render() {
-        if (this.props.loading) return <Loader></Loader>;
-        console.log(this.props.data.models.pageInfo);
         return (<div>
             <h1 className="align-middle">
-                Welcome to ModelSaber <h5 style={{ display: "inline" }}><sub><sub style={{ textDecorationLine: "line-through", bottom: 4, opacity: 0.1 }}><i>(Destroyer of old links)</i></sub></sub></h5>
+                Welcome to ModelSaber <label style={{ display: "inline", fontSize: 10, textDecorationLine: "line-through", opacity: 0.1 }}><i>(Destroyer of old links)</i></label>
             </h1>
-            <ModelFilter
-                filter={this.state.filter}
-                page={this.state.page}
-                size={this.state.size}
-                pageMove={(page, cursor) => this.setState({ page: page, cursor: cursor }, this.loadMore)}
-                setSize={(size) => this.setState({ size: size }, this.loadMore)}
-                setFilter={(filter) => this.setState({ filter: filter }, this.loadMore)} />
-            <div className="d-flex flex-wrap justify-content-between" style={{ margin: "0 -30px" }}>
-                {this.props.data.models.items.map(model => (<ModelCard key={model.uuid} {...model} navigate={this.nextPath} />))}
-            </div>
-            <ModelFilter
-                filter={this.state.filter}
-                page={this.state.page}
-                size={this.state.size}
-                pageMove={(page, cursor) => this.setState({ page: page, cursor: cursor }, this.loadMore)}
-                setSize={(size) => this.setState({ size: size }, this.loadMore)}
-                setFilter={(filter) => this.setState({ filter: filter }, this.loadMore)} />
+            <Models />
         </div>);
     }
 }
 
-export default withRouter(withGetModels(Home));
+export default withRouter(Home);

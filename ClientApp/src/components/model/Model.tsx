@@ -3,6 +3,7 @@ import { RouteComponentProps } from "react-router-dom";
 import { withGetModelFull } from "../../graphql";
 import { GetModelFullQueryResult } from "../../graphqlTypes";
 import { getTumbnail } from "../getTumbnail";
+import { Loader } from "../Loader";
 
 export class Model extends Component<GetModelFullQueryResult & RouteComponentProps<{ id: string }>> {
     vidRef: React.RefObject<HTMLVideoElement>;
@@ -19,7 +20,7 @@ export class Model extends Component<GetModelFullQueryResult & RouteComponentPro
     }
 
     render() {
-        if (this.props.loading) return (<></>);
+        if (this.props.loading) return (<Loader></Loader>);
         if (!this.props.data) {
             this.props.history.push("/");
             return (<></>);
