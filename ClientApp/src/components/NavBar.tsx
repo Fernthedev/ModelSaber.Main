@@ -30,7 +30,7 @@ class NavBar extends Component<RouteComponentProps, { loggedIn: boolean }> {
         return <header className="navbar sticky-top bg-dark">
             <div className="container-fluid">
                 <a className="btn btn-dark" onClick={() => this.navigate("/")}>
-                    <img src="modelsaber-logo-web.svg" alt="ModelSaberImage" className="img-fluid" width="52" height="52" />
+                    <img src="modelsaber-logo.svg" alt="ModelSaberImage" className="img-fluid" width="52" height="52" />
                 </a>
                 <div>
                     <a className="btn btn-primary me-3" href="https://github.com/legoandmars/modeldownloader" target="_blank">
