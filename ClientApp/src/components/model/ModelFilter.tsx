@@ -13,7 +13,7 @@ function ModelFilterFunc(props: ModelFilterProps) {
     const page = props.page;
     const size = props.size;
     const filter = props.filter;
-    const { data, loading, error } = useGetModelCursorsQuery({ variables: { size: size } });
+    const { data, loading } = useGetModelCursorsQuery({ variables: { size: size } });
 
     if (loading) return (<></>);
 
