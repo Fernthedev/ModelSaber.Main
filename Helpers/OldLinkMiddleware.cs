@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using ModelSaber.Database;
 
@@ -44,7 +45,7 @@ namespace ModelSaber.Main.Helpers
                     if (model == null)
                         context.Response.Redirect("/", true);
                     else
-                        context.Response.Redirect("/model/" + model!.Uuid, true);
+                        context.Response.Redirect("/model/" + WebEncoders.Base64UrlEncode(model!.Uuid.ToByteArray()), true);
                 }
             }
         }

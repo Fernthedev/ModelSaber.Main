@@ -203,20 +203,20 @@ namespace ModelSaber.Database
         public static Task<List<Model>> GetModelAsync(this DbSet<Model> models, int? first, Guid? createdAfter, string? filter, TypeEnum? mType, CancellationToken cancellationToken)
         {
             var regexs = string.IsNullOrWhiteSpace(filter) ? Array.Empty<Regex>() : filter.Split(' ').Select(t => new Regex(t, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToArray();
-            return Task.FromResult(models.IncludeModelData().OrderBy(t => t.Id).ToList()
+            var id = createdAfter.HasValue ? models.Single(t => t.Uuid == createdAfter).Id : 0;
+            return Task.FromResult(models.IncludeModelData().OrderBy(t => t.Id).Where(t => t.Id > id).ToList()
                 .If(regexs.Any(), x => x.Select(t => new FilterRank<Model>(t, regexs, arg => arg.Name)).OrderByDescending(t => t.Counts).Where(t => t.PassCheck()).Select(t => t.Value))
-                .If(mType.HasValue, x => x.Where(t => t.Type == mType!.Value))
-                .If(createdAfter.HasValue, x => x.SkipWhile(y => y.Uuid != createdAfter!.Value).Skip(1))
+                .If(mType.HasValue, x => x.Where(t => t.Type == mType!.Value))                          
                 .If(first.HasValue, x => x.Take(first!.Value)).ToList());
         }
 
         public static Task<List<Model>> GetModelReverseAsync(this DbSet<Model> models, int? last, Guid? createdBefore, string? filter, TypeEnum? mType, CancellationToken cancellationToken)
         {
             var regexs = string.IsNullOrWhiteSpace(filter) ? Array.Empty<Regex>() : filter.Split(' ').Select(t => new Regex(t, RegexOptions.Compiled | RegexOptions.IgnoreCase)).ToArray();
-            return Task.FromResult(models.IncludeModelData().OrderByDescending(t => t.Id).ToList()
+            var id = createdBefore.HasValue ? models.Single(t => t.Uuid == createdBefore).Id : 0;
+            return Task.FromResult(models.IncludeModelData().OrderByDescending(t => t.Id).Where(t => t.Id > id).ToList()
                 .If(regexs.Any(), x => x.Select(t => new FilterRank<Model>(t, regexs, arg => arg.Name)).OrderByDescending(t => t.Counts).Where(t => t.PassCheck()).Select(t => t.Value))
-                .If(mType.HasValue, x => x.Where(t => t.Type == mType!.Value))
-                .If(createdBefore.HasValue, x => x.SkipWhile(y => y.Uuid != createdBefore!.Value).Skip(1))
+                .If(mType.HasValue, x => x.Where(t => t.Type == mType!.Value))                            
                 .If(last.HasValue, x => x.Take(last!.Value)).ToList());
         }
 
