@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { withGetModelFull } from "../../graphql";
 import { GetModelFullQueryResult } from "../../graphqlTypes";
-import { GetTumbnail } from "../GetTumbnail";
+import { GetTumbnail } from "./GetTumbnail";
 import { Loader } from "../Loader";
 
 export class Model extends Component<GetModelFullQueryResult & RouteComponentProps<{ id: string }>> {
