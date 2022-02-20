@@ -1,19 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
+import { UnknownImage } from "./UnknownImage";
 
-export function getTumbnail(props: { thumbnail: string; }, vidRef: React.RefObject<HTMLVideoElement>, imgRef: React.RefObject<HTMLImageElement>, onError: React.ReactEventHandler<HTMLImageElement>, css: React.CSSProperties) {
+let internalCss: React.CSSProperties = { objectFit: "cover" };
+
+export function GetTumbnail(props: { thumbnail: string; css: React.CSSProperties; }) {
+    const [error, setError] = useState(false);
+
+    function onError() {
+        setError(true);
+    }
+
+    if (error) {
+        const date = new Date();
+        if (date.getDate() === 1 && date.getMonth() === 4 && date.getHours() < 12)
+            return (<video className="card-img-top" style={props.css} autoPlay loop muted playsInline>
+                <source src="isfmoment.webm" type="video/webm"></source>
+            </video>);
+        return (<UnknownImage css={props.css} />);
+    }
+
     let thumb = props.thumbnail;
     if (thumb.endsWith(".webm")) {
-        return (<video ref={vidRef} className="card-img-top" style={css} autoPlay loop muted playsInline>
+        return (<video className="card-img-top" style={props.css} autoPlay loop muted playsInline onError={onError}>
             <source src={props.thumbnail} type="video/webm"></source>
             <source src="isfmoment.webm" type="video/webm"></source>
         </video>);
     }
     else {
-        return (<>
-            <img ref={imgRef} className="card-img-top" src={props.thumbnail} alt="you're not supposed to see this" style={Object.assign(css, { objectFit: "cover" })} onError={onError} />
-            <video ref={vidRef} className="card-img-top" style={{ width: 259, height: 259, margin: "-0.5rem -1rem", display: "none" }} autoPlay loop muted playsInline>
-                <source src="isfmoment.webm" type="video/webm"></source>
-            </video>
-        </>);
+        return (<img className="card-img-top" src={props.thumbnail} alt="you're not supposed to see this" style={{ ...internalCss, ...props.css }} onError={onError} />);
     }
 }

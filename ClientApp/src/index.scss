@@ -315,6 +315,19 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
 @import "../node_modules/bootstrap/scss/placeholders";
 @import "../node_modules/bootstrap/scss/utilities/api";
 
+$utilities: map-merge(
+    $utilities,
+    (
+        "rounded-end-1": (
+            property: border-top-right-radius border-bottom-right-radius,
+            class: rounded-end-1,
+            values: (
+                null: $border-radius-sm,
+            ),
+        ),
+    )
+);
+
 .outline {
     border: 1px solid transparent;
 }
@@ -323,4 +336,8 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, "$value");
     .outline-#{$color} {
         border-color: $value;
     }
+}
+
+body {
+    overflow-y: scroll;
 }

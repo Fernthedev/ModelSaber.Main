@@ -26,13 +26,13 @@ class Index extends Component {
     render() {
         return (
             <React.StrictMode>
-                <BrowserRouter basename={baseUrl}>
-                    <Suspense fallback={Loader}>
+                <Suspense fallback={Loader}>
+                    <BrowserRouter basename={baseUrl}>
                         <GQLClient uri={uri}>
                             <App />
                         </GQLClient>
-                    </Suspense>
-                </BrowserRouter>
+                    </BrowserRouter>
+                </Suspense>
             </React.StrictMode>
         );
     }

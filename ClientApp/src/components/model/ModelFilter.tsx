@@ -1,5 +1,6 @@
 import React from "react";
 import { useGetModelCursorsQuery } from "../../graphqlTypes";
+import "./ModelFilter.scss";
 
 type ModelFilterProps = ModelFilterState & { pageMove: (page: number, cursor: string) => void, setSize: (size: number) => void, setFilter: (filter: string) => void };
 
@@ -80,9 +81,9 @@ function ModelFilterFunc(props: ModelFilterProps) {
     return (
         <nav>
             <ul className="pagination me-2">
-                <li className="page-item"><a className="page-link" href="#" onClick={() => updatePage(page - 1)}>Previous</a></li>
+                <li className="page-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Previous"><a className="page-link" href="#" onClick={() => updatePage(page - 1)}><i className="bi bi-arrow-left"></i></a></li>
                 {getPages(cursors.length)}
-                <li className="page-item"><a className="page-link" href="#" onClick={() => updatePage(page + 1)}>Next</a></li>
+                <li className="page-item me-3" data-bs-toggle="tooltip" data-bs-placement="top" title="Next" ><a className="page-link" href="#" onClick={() => updatePage(page + 1)} style={{ borderTopRightRadius: "0.25rem", borderBottomRightRadius: "0.25rem" }}><i className="bi bi-arrow-right"></i></a></li>
                 <li className="page-item">
                     <div className="dropdown">
                         <button className="btn btn-secondary dropdown-toggle" type="button" id="pageSizeDropdown" data-bs-toggle="dropdown" aria-expanded="false">Page Size</button>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { ModelFragment } from "../../graphqlTypes";
-import { getTumbnail } from "../getTumbnail";
+import { GetTumbnail } from "../GetTumbnail";
 
 export class ModelCard extends Component<ModelFragment & { navigate: (path: string) => void; }> {
     vidRef: React.RefObject<HTMLVideoElement>;
@@ -48,7 +48,7 @@ export class ModelCard extends Component<ModelFragment & { navigate: (path: stri
         return (<div className="card bg-dark mb-5" style={{ width: 259 }}>
             <div className="card-header" style={{ position: "relative" }}>
                 <div style={{ width: 259, height: 259 }}>
-                    {getTumbnail(this.props, this.vidRef, this.imgRef, this.fixWoopsieDaisy, { width: 259, height: 259, margin: "-0.5rem -1rem" })}
+                    <GetTumbnail {...this.props} css={{ width: 257, height: 257, margin: "-0.5rem -1rem" }} />
                 </div>
                 <h4 className="mt-3">
                     {this.props.name}

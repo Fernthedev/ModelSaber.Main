@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { withGetModelFull } from "../../graphql";
 import { GetModelFullQueryResult } from "../../graphqlTypes";
-import { getTumbnail } from "../getTumbnail";
+import { GetTumbnail } from "../GetTumbnail";
 import { Loader } from "../Loader";
 
 export class Model extends Component<GetModelFullQueryResult & RouteComponentProps<{ id: string }>> {
@@ -30,7 +30,7 @@ export class Model extends Component<GetModelFullQueryResult & RouteComponentPro
             (<>
                 <div className="row mt-2">
                     <div className="col-4 border-end pb-2">
-                        {getTumbnail(model, this.vidRef, this.imgRef, this.fixWoopsieDaisy, { width: "100%", borderRadius: "0.5rem" })}
+                        <GetTumbnail {...model} css={{ width: "100%", borderRadius: "0.5rem" }} />
                     </div>
                     <div className="col-8">
                         <h1>{model.name}</h1>

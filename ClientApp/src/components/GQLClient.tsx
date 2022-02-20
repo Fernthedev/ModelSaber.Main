@@ -1,6 +1,4 @@
 import React from "react";
-import "@popperjs/core";
-import "bootstrap";
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 
 export default function GQLClient(props: React.PropsWithChildren<{ uri: string }>) {

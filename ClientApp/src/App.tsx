@@ -1,5 +1,6 @@
 import React, { Component, lazy } from "react";
 import { Route } from "react-router";
+import { Tooltip } from "bootstrap/dist/js/bootstrap.bundle.min";
 import Layout from "./components/Layout";
 import XRegExp from "xregexp";
 import EventEmitter from "events";
@@ -26,6 +27,14 @@ export const unicodeWord = XRegExp.tag()`^\p{Letter}[\p{Letter}\p{Mark}]*$`;
 export const events = new ModelSaberEventEmitter();
 
 export default class App extends Component {
+    componentDidMount() {
+        setTimeout(() => {
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (tooltipTriggerEl) {
+                new Tooltip(tooltipTriggerEl);
+            })
+        }, 500);
+    }
+
     render() {
         return (
             <Layout>
