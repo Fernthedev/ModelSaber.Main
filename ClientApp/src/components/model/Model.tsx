@@ -6,9 +6,7 @@ import { Loader } from "../Loader";
 
 
 export default function Model(props: RouteComponentProps<{ id: string }>) {
-    const vidRef = React.createRef<HTMLVideoElement>();
-    const imgRef = React.createRef<HTMLImageElement>();
-    const [{ data, fetching }, _] = useGetModelFullQuery({ variables: { modelId: props.match.params.id } });
+    const [{ data, fetching }] = useGetModelFullQuery({ variables: { modelId: props.match.params.id } });
     const votes = useGetModelVotesQuery({ variables: { modelId: props.match.params.id }, pause: fetching });
 
     if (fetching) return (<Loader></Loader>);

@@ -13,8 +13,8 @@ export interface ModelFilterState {
 function ModelFilterFunc(props: ModelFilterProps) {
     const page = props.page;
     const size = props.size;
-    const filter = props.filter;
-    const [{ data, fetching }, _] = useGetModelCursorsQuery({ variables: { size: size } });
+    //const filter = props.filter;
+    const [{ data, fetching }] = useGetModelCursorsQuery({ variables: { size: size } });
 
     if (fetching) return (<></>);
 
@@ -31,9 +31,9 @@ function ModelFilterFunc(props: ModelFilterProps) {
         props.pageMove(p - 1, cursors[p - 1]);
     }
 
-    function updateFilter(f: string) {
-        props.setFilter(f);
-    }
+    // function updateFilter(f: string) {
+    //     props.setFilter(f);
+    // }
 
     function getPages(length: number) {
         var userPagesFirst = Array(length).fill(null).map((_, i) => i + 1);
