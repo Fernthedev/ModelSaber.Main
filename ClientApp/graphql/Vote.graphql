@@ -1,0 +1,10 @@
+query GetModelVotes($modelId: String!) {
+    modelVotes(id: $modelId) {
+        down
+        count
+    }
+}
+
+mutation SendVote($modelId: UInt!, $userId: String!, $vote: Byte!) {
+    vote(voteArgs: {modelId: $modelId, id: $userId, platform: "web", vote: $vote})
+}

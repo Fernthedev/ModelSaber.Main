@@ -1,13 +1,15 @@
 import React from "react";
-import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
+import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
+import { cacheExchange } from "@urql/exchange-graphcache";
 
 export default function GQLClient(props: React.PropsWithChildren<{ uri: string }>) {
-    const client = new ApolloClient({
-        uri: props.uri + "/graphql",
-        cache: new InMemoryCache()
+    const client = createClient({
+        url: props.uri + "/graphql",
+        requestPolicy: "cache-and-network",
+        exchanges: [dedupExchange, cacheExchange({}), fetchExchange]
     });
 
-    return (<ApolloProvider client={client}>
+    return (<Provider value={client}>
         {props.children}
-    </ApolloProvider>)
+    </Provider>)
 }

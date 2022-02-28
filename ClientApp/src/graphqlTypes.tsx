@@ -1,11 +1,11 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
+import gql from 'graphql-tag';
+import * as Urql from 'urql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {} as const;
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -60,6 +60,8 @@ export type ModelSaberQuery = {
   model?: Maybe<ModelType>;
   /** Lists cursors based on pagination size */
   modelCursors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Gets the vote stats for the model. */
+  modelVotes?: Maybe<Array<Maybe<VoteType>>>;
   /** Model list */
   models?: Maybe<ModelConnection>;
   /** You wanted yer tags? */
@@ -75,7 +77,13 @@ export type ModelSaberQueryModelArgs = {
 
 
 export type ModelSaberQueryModelCursorsArgs = {
+  order?: InputMaybe<Scalars['String']>;
   size?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type ModelSaberQueryModelVotesArgs = {
+  id?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -245,19 +253,25 @@ export type VoteInputType = {
   vote: Scalars['Byte'];
 };
 
+export type VoteType = {
+  __typename?: 'VoteType';
+  count?: Maybe<Scalars['Int']>;
+  down?: Maybe<Scalars['Boolean']>;
+};
+
 export type GetModelFullQueryVariables = Exact<{
   modelId: Scalars['String'];
 }>;
 
 
-export type GetModelFullQuery = { __typename?: 'ModelSaberQuery', model?: { __typename?: 'ModelType', uuid: string, name: string, status?: Status | null | undefined, platform?: Platform | null | undefined, type?: TypeEnum | null | undefined, description?: string | null | undefined, thumbnail: string, downloadPath: string, users?: Array<{ __typename?: 'UserType', name?: string | null | undefined, discordId?: any | null | undefined, id: any } | null | undefined> | null | undefined, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null | undefined> | null | undefined } | null | undefined };
+export type GetModelFullQuery = { __typename?: 'ModelSaberQuery', model?: { __typename?: 'ModelType', uuid: string, name: string, status?: Status | null, platform?: Platform | null, type?: TypeEnum | null, description?: string | null, thumbnail: string, downloadPath: string, users?: Array<{ __typename?: 'UserType', name?: string | null, discordId?: any | null, id: any } | null> | null, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null> | null } | null };
 
 export type GetModelCursorsQueryVariables = Exact<{
   size?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type GetModelCursorsQuery = { __typename?: 'ModelSaberQuery', modelCursors?: Array<string | null | undefined> | null | undefined };
+export type GetModelCursorsQuery = { __typename?: 'ModelSaberQuery', modelCursors?: Array<string | null> | null };
 
 export type GetModelsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
@@ -267,9 +281,25 @@ export type GetModelsQueryVariables = Exact<{
 }>;
 
 
-export type GetModelsQuery = { __typename?: 'ModelSaberQuery', models?: { __typename?: 'ModelConnection', items?: Array<{ __typename?: 'ModelType', uuid: string, name: string, status?: Status | null | undefined, platform?: Platform | null | undefined, cursor: string, thumbnail: string, users?: Array<{ __typename?: 'UserType', name?: string | null | undefined, discordId?: any | null | undefined, id: any } | null | undefined> | null | undefined, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null | undefined> | null | undefined } | null | undefined> | null | undefined, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null | undefined, hasNextPage: boolean, hasPreviousPage: boolean } } | null | undefined };
+export type GetModelsQuery = { __typename?: 'ModelSaberQuery', models?: { __typename?: 'ModelConnection', items?: Array<{ __typename?: 'ModelType', uuid: string, name: string, status?: Status | null, platform?: Platform | null, cursor: string, thumbnail: string, users?: Array<{ __typename?: 'UserType', name?: string | null, discordId?: any | null, id: any } | null> | null, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null> | null } | null> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean } } | null };
 
-export type ModelFragment = { __typename?: 'ModelType', uuid: string, name: string, status?: Status | null | undefined, platform?: Platform | null | undefined, cursor: string, thumbnail: string, users?: Array<{ __typename?: 'UserType', name?: string | null | undefined, discordId?: any | null | undefined, id: any } | null | undefined> | null | undefined, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null | undefined> | null | undefined };
+export type ModelFragment = { __typename?: 'ModelType', uuid: string, name: string, status?: Status | null, platform?: Platform | null, cursor: string, thumbnail: string, users?: Array<{ __typename?: 'UserType', name?: string | null, discordId?: any | null, id: any } | null> | null, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null> | null };
+
+export type GetModelVotesQueryVariables = Exact<{
+  modelId: Scalars['String'];
+}>;
+
+
+export type GetModelVotesQuery = { __typename?: 'ModelSaberQuery', modelVotes?: Array<{ __typename?: 'VoteType', down?: boolean | null, count?: number | null } | null> | null };
+
+export type SendVoteMutationVariables = Exact<{
+  modelId: Scalars['UInt'];
+  userId: Scalars['String'];
+  vote: Scalars['Byte'];
+}>;
+
+
+export type SendVoteMutation = { __typename?: 'ModelSaberMutation', vote?: number | null };
 
 export const ModelFragmentDoc = gql`
     fragment Model on ModelType {
@@ -314,66 +344,18 @@ export const GetModelFullDocument = gql`
 }
     `;
 
-/**
- * __useGetModelFullQuery__
- *
- * To run a query within a React component, call `useGetModelFullQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetModelFullQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetModelFullQuery({
- *   variables: {
- *      modelId: // value for 'modelId'
- *   },
- * });
- */
-export function useGetModelFullQuery(baseOptions: Apollo.QueryHookOptions<GetModelFullQuery, GetModelFullQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetModelFullQuery, GetModelFullQueryVariables>(GetModelFullDocument, options);
-      }
-export function useGetModelFullLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetModelFullQuery, GetModelFullQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetModelFullQuery, GetModelFullQueryVariables>(GetModelFullDocument, options);
-        }
-export type GetModelFullQueryHookResult = ReturnType<typeof useGetModelFullQuery>;
-export type GetModelFullLazyQueryHookResult = ReturnType<typeof useGetModelFullLazyQuery>;
-export type GetModelFullQueryResult = Apollo.QueryResult<GetModelFullQuery, GetModelFullQueryVariables>;
+export function useGetModelFullQuery(options: Omit<Urql.UseQueryArgs<GetModelFullQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetModelFullQuery>({ query: GetModelFullDocument, ...options });
+};
 export const GetModelCursorsDocument = gql`
     query GetModelCursors($size: Int) {
   modelCursors(size: $size)
 }
     `;
 
-/**
- * __useGetModelCursorsQuery__
- *
- * To run a query within a React component, call `useGetModelCursorsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetModelCursorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetModelCursorsQuery({
- *   variables: {
- *      size: // value for 'size'
- *   },
- * });
- */
-export function useGetModelCursorsQuery(baseOptions?: Apollo.QueryHookOptions<GetModelCursorsQuery, GetModelCursorsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetModelCursorsQuery, GetModelCursorsQueryVariables>(GetModelCursorsDocument, options);
-      }
-export function useGetModelCursorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetModelCursorsQuery, GetModelCursorsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetModelCursorsQuery, GetModelCursorsQueryVariables>(GetModelCursorsDocument, options);
-        }
-export type GetModelCursorsQueryHookResult = ReturnType<typeof useGetModelCursorsQuery>;
-export type GetModelCursorsLazyQueryHookResult = ReturnType<typeof useGetModelCursorsLazyQuery>;
-export type GetModelCursorsQueryResult = Apollo.QueryResult<GetModelCursorsQuery, GetModelCursorsQueryVariables>;
+export function useGetModelCursorsQuery(options?: Omit<Urql.UseQueryArgs<GetModelCursorsQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetModelCursorsQuery>({ query: GetModelCursorsDocument, ...options });
+};
 export const GetModelsDocument = gql`
     query GetModels($first: Int, $after: String, $nameFilter: String, $modelType: TypeEnum) {
   models(
@@ -394,33 +376,27 @@ export const GetModelsDocument = gql`
 }
     ${ModelFragmentDoc}`;
 
-/**
- * __useGetModelsQuery__
- *
- * To run a query within a React component, call `useGetModelsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetModelsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetModelsQuery({
- *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      nameFilter: // value for 'nameFilter'
- *      modelType: // value for 'modelType'
- *   },
- * });
- */
-export function useGetModelsQuery(baseOptions?: Apollo.QueryHookOptions<GetModelsQuery, GetModelsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetModelsQuery, GetModelsQueryVariables>(GetModelsDocument, options);
-      }
-export function useGetModelsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetModelsQuery, GetModelsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetModelsQuery, GetModelsQueryVariables>(GetModelsDocument, options);
-        }
-export type GetModelsQueryHookResult = ReturnType<typeof useGetModelsQuery>;
-export type GetModelsLazyQueryHookResult = ReturnType<typeof useGetModelsLazyQuery>;
-export type GetModelsQueryResult = Apollo.QueryResult<GetModelsQuery, GetModelsQueryVariables>;
+export function useGetModelsQuery(options?: Omit<Urql.UseQueryArgs<GetModelsQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetModelsQuery>({ query: GetModelsDocument, ...options });
+};
+export const GetModelVotesDocument = gql`
+    query GetModelVotes($modelId: String!) {
+  modelVotes(id: $modelId) {
+    down
+    count
+  }
+}
+    `;
+
+export function useGetModelVotesQuery(options: Omit<Urql.UseQueryArgs<GetModelVotesQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetModelVotesQuery>({ query: GetModelVotesDocument, ...options });
+};
+export const SendVoteDocument = gql`
+    mutation SendVote($modelId: UInt!, $userId: String!, $vote: Byte!) {
+  vote(voteArgs: {modelId: $modelId, id: $userId, platform: "web", vote: $vote})
+}
+    `;
+
+export function useSendVoteMutation() {
+  return Urql.useMutation<SendVoteMutation, SendVoteMutationVariables>(SendVoteDocument);
+};

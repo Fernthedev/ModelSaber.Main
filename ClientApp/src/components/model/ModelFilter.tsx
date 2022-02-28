@@ -14,9 +14,9 @@ function ModelFilterFunc(props: ModelFilterProps) {
     const page = props.page;
     const size = props.size;
     const filter = props.filter;
-    const { data, loading } = useGetModelCursorsQuery({ variables: { size: size } });
+    const [{ data, fetching }, _] = useGetModelCursorsQuery({ variables: { size: size } });
 
-    if (loading) return (<></>);
+    if (fetching) return (<></>);
 
     const cursors = ["", ...data.modelCursors];
 
@@ -98,7 +98,7 @@ function ModelFilterFunc(props: ModelFilterProps) {
                     </div>
                 </li>
             </ul>
-            <input value={filter} onInput={(event) => updateFilter(event.currentTarget.value)} />
+            {/* <input value={filter} onInput={(event) => updateFilter(event.currentTarget.value)} /> */}
         </nav>
     );
 }

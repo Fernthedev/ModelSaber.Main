@@ -10,7 +10,7 @@ export default withRouter(function Models(props: RouteComponentProps) {
     const [cursor, setCursor] = useState("");
     const [filter, setFilter] = useState("");
     const [page, setPage] = useState(0);
-    const { data, loading } = useGetModelsQuery({ variables: { first: size, after: cursor } });
+    const [{ data, fetching }, _] = useGetModelsQuery({ variables: { first: size, after: cursor } });
 
     props.location.hash = `p${page}s${size}`;
 
@@ -18,7 +18,7 @@ export default withRouter(function Models(props: RouteComponentProps) {
         props.history.push(path);
     }
 
-    if (loading) return (<Loader></Loader>);
+    if (fetching) return (<Loader></Loader>);
 
     return (<>
         <ModelFilter
