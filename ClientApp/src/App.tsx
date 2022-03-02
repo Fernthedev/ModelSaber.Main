@@ -1,5 +1,5 @@
 import React, { Component, lazy } from "react";
-import { Route } from "react-router";
+import { Route, Routes } from "react-router";
 import { Tooltip } from "bootstrap/dist/js/bootstrap.bundle.min";
 import Layout from "./components/Layout";
 import XRegExp from "xregexp";
@@ -38,13 +38,15 @@ export default class App extends Component {
     render() {
         return (
             <Layout>
-                <Route exact path="/" component={Home} />
-                <Route exact path="/models" component={Models} />
-                <Route path="/contributions" component={Contributions} />
-                <Route path="/dev" component={Developer} />
-                <Route exact path="/discordlogin" component={Login} />
-                <Route exact path="/logout" component={Logout} />
-                <Route exact path="/model/:id" component={Model} />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/models" element={<Models />} />
+                    <Route path="/contributions" element={<Contributions />} />
+                    <Route path="/dev" element={<Developer />} />
+                    <Route path="/discordlogin" element={<Login />} />
+                    <Route path="/logout" element={<Logout />} />
+                    <Route path="/model/:id" element={<Model />} />
+                </Routes>
             </Layout>
         )
     }

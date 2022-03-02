@@ -1,17 +1,19 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
 import { useGetModelFullQuery, useGetModelVotesQuery } from "../../graphqlTypes";
 import { GetTumbnail } from "./GetTumbnail";
 import { Loader } from "../Loader";
+import { useNavigate, useParams } from "react-router-dom";
 
 
-export default function Model(props: RouteComponentProps<{ id: string }>) {
-    const [{ data, fetching }] = useGetModelFullQuery({ variables: { modelId: props.match.params.id } });
-    const votes = useGetModelVotesQuery({ variables: { modelId: props.match.params.id }, pause: fetching });
+export default function Model() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [{ data, fetching }] = useGetModelFullQuery({ variables: { modelId: id } });
+    const votes = useGetModelVotesQuery({ variables: { modelId: id }, pause: fetching });
 
     if (fetching) return (<Loader></Loader>);
     if (!data) {
-        props.history.push("/");
+        navigate("/");
         return (<></>);
     }
 

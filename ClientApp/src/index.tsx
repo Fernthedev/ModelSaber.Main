@@ -58,6 +58,10 @@ export function getCookie(cname: string) {
     return "";
 }
 
+export function checkCookie(cname: string) {
+    return !!getCookie(cname);
+}
+
 export function b64DecodeUnicode(str: string) {
     return decodeURIComponent(atob(str).split('').map(function (c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);

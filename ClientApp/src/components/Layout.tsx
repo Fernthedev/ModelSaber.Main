@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import NavBar from "./NavBar";
 import "./Layout.scss";
 
-export default class Layout extends Component<any, { build: string }> {
+export default class Layout extends Component<any, { build: { buildVersion: string, buildTime: string } }> {
     constructor(props: any) {
         super(props);
         this.state = {
-            build: ""
+            build: { buildTime: "", buildVersion: "" }
         }
     }
 
@@ -14,8 +14,8 @@ export default class Layout extends Component<any, { build: string }> {
         fetch("api").then(async t => {
             if (!t.ok)
                 return;
-            var build = await t.text();
-            this.setState({ build: build });
+            var build = await t.json();
+            this.setState({ build: { buildTime: new Date(Date.parse(build.buildTime)).toLocaleString(), buildVersion: build.buildVersion } });
         }).catch(console.error);
     }
 
@@ -28,7 +28,7 @@ export default class Layout extends Component<any, { build: string }> {
             <div className="spacer" />
             <footer className="footer bg-dark">
                 <div className="container">
-                    <label>{this.state.build}</label>
+                    <label>Build: {this.state.build.buildVersion}, Build Time: {this.state.build.buildTime}</label>
                 </div>
             </footer>
         </>);

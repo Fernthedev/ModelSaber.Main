@@ -11,7 +11,10 @@ namespace ModelSaber.Main.Controllers
         [Route("api/")]
         public IActionResult Index()
         {
-            return Ok($"Build: {Program.Version}, Build Time: {Program.CompiledTime.ToUniversalTime():O}");
+            return Ok(new {
+                BuildVersion = Program.Version.ToString(),
+                BuildTime = $"{Program.CompiledTime.ToUniversalTime():s}Z"
+            });
         }
     }
 }

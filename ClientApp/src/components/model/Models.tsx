@@ -1,22 +1,21 @@
+import { count } from "console";
 import React, { useState } from "react";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useGetModelsQuery } from "../../graphqlTypes";
 import { Loader } from "../Loader";
 import { ModelCard } from "./ModelCard";
 import ModelFilter from "./ModelFilter";
 
-export default withRouter(function Models(props: RouteComponentProps) {
+export default function Models() {
     const [size, setSize] = useState(10);
     const [cursor, setCursor] = useState("");
     const [filter, setFilter] = useState("");
     const [page, setPage] = useState(0);
     const [{ data, fetching }] = useGetModelsQuery({ variables: { first: size, after: cursor } });
+    const location = useLocation();
+    const history = useNavigate();
 
-    props.location.hash = `p${page}s${size}`;
-
-    function navigate(path: string) {
-        props.history.push(path);
-    }
+    location.hash = `p${page}s${size}`;
 
     if (fetching) return (<Loader></Loader>);
 
@@ -29,7 +28,7 @@ export default withRouter(function Models(props: RouteComponentProps) {
             setSize={setSize}
             setFilter={setFilter} />
         <div className="d-flex flex-wrap justify-content-between" style={{ margin: "0 -30px" }}>
-            {data.models.items.map(model => (<ModelCard key={model.uuid} {...model} navigate={navigate} />))}
+            {data.models.items.map(model => (<ModelCard key={model.uuid} {...model} navigate={history} />))}
         </div>
         <ModelFilter
             filter={filter}
@@ -39,4 +38,4 @@ export default withRouter(function Models(props: RouteComponentProps) {
             setSize={setSize}
             setFilter={setFilter} />
     </>);
-})
+}
