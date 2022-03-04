@@ -26,7 +26,7 @@ class Index extends Component {
     render() {
         return (
             <React.StrictMode>
-                <Suspense fallback={Loader}>
+                <Suspense fallback={<Loader />}>
                     <BrowserRouter basename={baseUrl}>
                         <GQLClient uri={uri}>
                             <App />
