@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useGetModelsQuery } from "../../graphqlTypes";
+import { TypeEnum, useGetModelsQuery } from "../../graphqlTypes";
 import { Loader } from "../Loader";
 import { ModelCard } from "./ModelCard";
 import ModelFilter from "./ModelFilter";
@@ -10,7 +10,7 @@ export default function Models() {
     const [cursor, setCursor] = useState("");
     const [filter, setFilter] = useState("");
     const [page, setPage] = useState(0);
-    const [{ data, fetching }] = useGetModelsQuery({ variables: { first: size, after: cursor } });
+    const [{ data, fetching }] = useGetModelsQuery({ variables: { first: size, after: cursor, nameFilter: "" } });
     const location = useLocation();
     const history = useNavigate();
 
