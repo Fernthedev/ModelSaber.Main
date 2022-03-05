@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { TypeEnum, useGetModelsQuery } from "../../graphqlTypes";
+import { useGetModelsQuery } from "../../graphqlTypes";
 import { Loader } from "../Loader";
 import { ModelCard } from "./ModelCard";
 import ModelFilter from "./ModelFilter";
