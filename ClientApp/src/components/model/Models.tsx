@@ -1,4 +1,3 @@
-import { count } from "console";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGetModelsQuery } from "../../graphqlTypes";

@@ -4,7 +4,7 @@ import { unicodeWord } from "../App";
 import { events } from "../App";
 
 export default function DiscordRedirLogin() {
-    const [requireName, setRequireName] = useState(false);
+    // const [requireName, setRequireName] = useState(false);
     const [discordObj, setDiscordObj] = useState({ discordId: "", email: "", name: "", avatar: "" });
     const navigate = useNavigate();
 
@@ -35,7 +35,7 @@ export default function DiscordRedirLogin() {
                 }
             }
             else {
-                setRequireName(true);
+                // setRequireName(true);
                 setDiscordObj(body);
             }
         });
