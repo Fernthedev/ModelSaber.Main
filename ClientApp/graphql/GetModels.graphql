@@ -1,4 +1,4 @@
-query GetModels($first: Int, $after: String, $nameFilter: String, $modelType: TypeEnum) {
+query GetModels($first: Int, $after: String, $nameFilter: String!, $modelType: TypeEnum) {
     models(first: $first, after: $after, nameFilter: $nameFilter, modelType: $modelType) {
         items {
             ...Model

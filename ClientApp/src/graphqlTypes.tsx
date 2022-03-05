@@ -276,7 +276,7 @@ export type GetModelCursorsQuery = { __typename?: 'ModelSaberQuery', modelCursor
 export type GetModelsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
   after?: InputMaybe<Scalars['String']>;
-  nameFilter?: InputMaybe<Scalars['String']>;
+  nameFilter: Scalars['String'];
   modelType?: InputMaybe<TypeEnum>;
 }>;
 
@@ -357,7 +357,7 @@ export function useGetModelCursorsQuery(options?: Omit<Urql.UseQueryArgs<GetMode
   return Urql.useQuery<GetModelCursorsQuery>({ query: GetModelCursorsDocument, ...options });
 };
 export const GetModelsDocument = gql`
-    query GetModels($first: Int, $after: String, $nameFilter: String, $modelType: TypeEnum) {
+    query GetModels($first: Int, $after: String, $nameFilter: String!, $modelType: TypeEnum) {
   models(
     first: $first
     after: $after
@@ -376,7 +376,7 @@ export const GetModelsDocument = gql`
 }
     ${ModelFragmentDoc}`;
 
-export function useGetModelsQuery(options?: Omit<Urql.UseQueryArgs<GetModelsQueryVariables>, 'query'>) {
+export function useGetModelsQuery(options: Omit<Urql.UseQueryArgs<GetModelsQueryVariables>, 'query'>) {
   return Urql.useQuery<GetModelsQuery>({ query: GetModelsDocument, ...options });
 };
 export const GetModelVotesDocument = gql`
