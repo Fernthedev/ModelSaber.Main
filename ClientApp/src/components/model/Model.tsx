@@ -1,15 +1,18 @@
 import React from "react";
-import { useGetModelFullQuery, useGetModelVotesQuery } from "../../graphqlTypes";
+import { useGetModelFullQuery, useGetModelVotesQuery, useGetUserVoteQuery, useSendVoteMutation } from "../../graphqlTypes";
 import { GetTumbnail } from "./GetTumbnail";
 import { Loader } from "../Loader";
 import { useNavigate, useParams } from "react-router-dom";
+import { getParamFromLogin } from "../..";
 
 
 export default function Model() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [{ data, fetching }] = useGetModelFullQuery({ variables: { modelId: id } });
-    const votes = useGetModelVotesQuery({ variables: { modelId: id }, pause: fetching });
+    const votes = useGetModelVotesQuery({ variables: { modelId: id } });
+    const vote = useGetUserVoteQuery({ variables: { modelId: id } });
+    const sendVote = useSendVoteMutation();
 
     if (fetching) return (<Loader></Loader>);
     if (!data) {
@@ -17,6 +20,10 @@ export default function Model() {
         return (<></>);
     }
 
+    function submitVote(bool: boolean) {
+        var k = vote[0].data.modelVote.downVote == bool ? 2 : bool ? 0 : 1;
+        sendVote[1]({ modelId: data.model.id, userId: getParamFromLogin("discordId"), vote: k });
+    }
 
     let model = data.model;
     return !!model ?
@@ -56,10 +63,10 @@ export default function Model() {
                 <div className="row border-top pt-1">
                     <div className="row">
                         <div className="d-flex">
-                            {votes[0].fetching ? (<h3>Loading...</h3>) : (<>
+                            {votes[0].fetching || vote[0].fetching ? (<h3>Loading...</h3>) : (<>
                                 <h3 className="col-1">Votes:</h3>
-                                <div className="col-2"><i className="bi bi-hand-thumbs-up-fill btn btn-secondary"></i><label className="ps-2">{votes[0].data.modelVotes.find(t => !t.down)?.count || 0}</label></div>
-                                <div className="col-2"><i className="bi bi-hand-thumbs-down-fill btn btn-secondary"></i><label className="ps-2">{votes[0].data.modelVotes.find(t => t.down)?.count || 0}</label></div>
+                                <div className="col-2" onClick={() => submitVote(false)}><i className={"bi bi-hand-thumbs-up-fill btn btn-secondary" + (!vote[0].data.modelVote.downVote ? " active" : "")}></i><label className="ps-2">{votes[0].data.modelVotes.find(t => !t.down)?.count || 0}</label></div>
+                                <div className="col-2" onClick={() => submitVote(true)}><i className={"bi bi-hand-thumbs-down-fill btn btn-secondary" + (vote[0].data.modelVote.downVote ? " active" : "")}></i><label className="ps-2">{votes[0].data.modelVotes.find(t => t.down)?.count || 0}</label></div>
                                 <div className="col-7"></div>
                             </>)}
                         </div>

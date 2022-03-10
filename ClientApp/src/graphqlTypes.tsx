@@ -46,7 +46,7 @@ export type ModelEdge = {
 export type ModelSaberMutation = {
   __typename?: 'ModelSaberMutation';
   /** Modifies votes for a model. */
-  vote?: Maybe<Scalars['Int']>;
+  vote?: Maybe<VoteType>;
 };
 
 
@@ -60,8 +60,10 @@ export type ModelSaberQuery = {
   model?: Maybe<ModelType>;
   /** Lists cursors based on pagination size */
   modelCursors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  /** Gets the current users vote. */
+  modelVote?: Maybe<VoteType>;
   /** Gets the vote stats for the model. */
-  modelVotes?: Maybe<Array<Maybe<VoteType>>>;
+  modelVotes?: Maybe<Array<Maybe<VoteCompoundType>>>;
   /** Model list */
   models?: Maybe<ModelConnection>;
   /** You wanted yer tags? */
@@ -82,8 +84,13 @@ export type ModelSaberQueryModelCursorsArgs = {
 };
 
 
+export type ModelSaberQueryModelVoteArgs = {
+  id: Scalars['String'];
+};
+
+
 export type ModelSaberQueryModelVotesArgs = {
-  id?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
 };
 
 
@@ -93,7 +100,7 @@ export type ModelSaberQueryModelsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   modelType?: InputMaybe<TypeEnum>;
-  nameFilter?: InputMaybe<Scalars['String']>;
+  nameFilter: Scalars['String'];
 };
 
 
@@ -246,6 +253,12 @@ export type UserTypeModelsArgs = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
+export type VoteCompoundType = {
+  __typename?: 'VoteCompoundType';
+  count?: Maybe<Scalars['Int']>;
+  down?: Maybe<Scalars['Boolean']>;
+};
+
 export type VoteInputType = {
   id: Scalars['String'];
   modelId: Scalars['UInt'];
@@ -255,8 +268,9 @@ export type VoteInputType = {
 
 export type VoteType = {
   __typename?: 'VoteType';
-  count?: Maybe<Scalars['Int']>;
-  down?: Maybe<Scalars['Boolean']>;
+  downVote: Scalars['Boolean'];
+  gameId?: Maybe<Scalars['String']>;
+  userId?: Maybe<Scalars['UInt']>;
 };
 
 export type GetModelFullQueryVariables = Exact<{
@@ -264,7 +278,7 @@ export type GetModelFullQueryVariables = Exact<{
 }>;
 
 
-export type GetModelFullQuery = { __typename?: 'ModelSaberQuery', model?: { __typename?: 'ModelType', uuid: string, name: string, status?: Status | null, platform?: Platform | null, type?: TypeEnum | null, description?: string | null, thumbnail: string, downloadPath: string, users?: Array<{ __typename?: 'UserType', name?: string | null, discordId?: any | null, id: any } | null> | null, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null> | null } | null };
+export type GetModelFullQuery = { __typename?: 'ModelSaberQuery', model?: { __typename?: 'ModelType', id: any, uuid: string, name: string, status?: Status | null, platform?: Platform | null, type?: TypeEnum | null, description?: string | null, thumbnail: string, downloadPath: string, users?: Array<{ __typename?: 'UserType', name?: string | null, discordId?: any | null, id: any } | null> | null, tags?: Array<{ __typename?: 'TagType', name: string, id: any } | null> | null } | null };
 
 export type GetModelCursorsQueryVariables = Exact<{
   size?: InputMaybe<Scalars['Int']>;
@@ -290,7 +304,7 @@ export type GetModelVotesQueryVariables = Exact<{
 }>;
 
 
-export type GetModelVotesQuery = { __typename?: 'ModelSaberQuery', modelVotes?: Array<{ __typename?: 'VoteType', down?: boolean | null, count?: number | null } | null> | null };
+export type GetModelVotesQuery = { __typename?: 'ModelSaberQuery', modelVotes?: Array<{ __typename?: 'VoteCompoundType', down?: boolean | null, count?: number | null } | null> | null };
 
 export type SendVoteMutationVariables = Exact<{
   modelId: Scalars['UInt'];
@@ -299,7 +313,14 @@ export type SendVoteMutationVariables = Exact<{
 }>;
 
 
-export type SendVoteMutation = { __typename?: 'ModelSaberMutation', vote?: number | null };
+export type SendVoteMutation = { __typename?: 'ModelSaberMutation', vote?: { __typename?: 'VoteType', downVote: boolean, gameId?: string | null, userId?: any | null } | null };
+
+export type GetUserVoteQueryVariables = Exact<{
+  modelId: Scalars['String'];
+}>;
+
+
+export type GetUserVoteQuery = { __typename?: 'ModelSaberQuery', modelVote?: { __typename?: 'VoteType', downVote: boolean, gameId?: string | null, userId?: any | null } | null };
 
 export const ModelFragmentDoc = gql`
     fragment Model on ModelType {
@@ -323,6 +344,7 @@ export const ModelFragmentDoc = gql`
 export const GetModelFullDocument = gql`
     query GetModelFull($modelId: String!) {
   model(id: $modelId) {
+    id
     uuid
     name
     status
@@ -393,10 +415,27 @@ export function useGetModelVotesQuery(options: Omit<Urql.UseQueryArgs<GetModelVo
 };
 export const SendVoteDocument = gql`
     mutation SendVote($modelId: UInt!, $userId: String!, $vote: Byte!) {
-  vote(voteArgs: {modelId: $modelId, id: $userId, platform: "web", vote: $vote})
+  vote(voteArgs: {modelId: $modelId, id: $userId, platform: "web", vote: $vote}) {
+    downVote
+    gameId
+    userId
+  }
 }
     `;
 
 export function useSendVoteMutation() {
   return Urql.useMutation<SendVoteMutation, SendVoteMutationVariables>(SendVoteDocument);
+};
+export const GetUserVoteDocument = gql`
+    query GetUserVote($modelId: String!) {
+  modelVote(id: $modelId) {
+    downVote
+    gameId
+    userId
+  }
+}
+    `;
+
+export function useGetUserVoteQuery(options: Omit<Urql.UseQueryArgs<GetUserVoteQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetUserVoteQuery>({ query: GetUserVoteDocument, ...options });
 };

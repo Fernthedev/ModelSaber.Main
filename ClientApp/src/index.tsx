@@ -67,3 +67,12 @@ export function b64DecodeUnicode(str: string) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
 }
+
+export function decodeLogin() {
+    var str = getCookie("login").split(".");
+    return JSON.parse(b64DecodeUnicode(str[1]));
+}
+
+export function getParamFromLogin(param: string) {
+    return decodeLogin()[param];
+}
