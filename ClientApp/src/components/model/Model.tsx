@@ -63,7 +63,7 @@ export default function Model() {
                 <div className="row border-top pt-1">
                     <div className="row">
                         <div className="d-flex">
-                            {votes[0].fetching || vote[0].fetching ? (<h3>Loading...</h3>) : (<>
+                            {votes[0].fetching || vote[0].fetching ? (<h3>Loading...</h3>) : vote[0].error ? (<></>) : (<>
                                 <h3 className="col-1">Votes:</h3>
                                 <div className="col-2" onClick={() => submitVote(false)}><i className={"bi bi-hand-thumbs-up-fill btn btn-secondary" + (!vote[0].data.modelVote.downVote ? " active" : "")}></i><label className="ps-2">{votes[0].data.modelVotes.find(t => !t.down)?.count || 0}</label></div>
                                 <div className="col-2" onClick={() => submitVote(true)}><i className={"bi bi-hand-thumbs-down-fill btn btn-secondary" + (vote[0].data.modelVote.downVote ? " active" : "")}></i><label className="ps-2">{votes[0].data.modelVotes.find(t => t.down)?.count || 0}</label></div>
