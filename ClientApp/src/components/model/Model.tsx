@@ -22,7 +22,10 @@ export default function Model() {
 
     function submitVote(bool: boolean) {
         var k = vote[0].data.modelVote.downVote == bool ? 2 : bool ? 0 : 1;
-        sendVote[1]({ modelId: data.model.id, userId: getParamFromLogin("discordId"), vote: k });
+        sendVote[1]({ modelId: data.model.id, userId: getParamFromLogin("discordId"), vote: k }).then(() => {
+            votes[1]();
+            vote[1]();
+        });
     }
 
     let model = data.model;
