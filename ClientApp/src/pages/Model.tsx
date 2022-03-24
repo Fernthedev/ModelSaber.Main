@@ -1,9 +1,9 @@
 import React from "react";
-import { useGetModelFullQuery, useGetModelVotesQuery, useGetUserVoteQuery, useSendVoteMutation } from "../../graphqlTypes";
-import { GetTumbnail } from "./GetTumbnail";
-import { Loader } from "../Loader";
+import { useGetModelFullQuery, useGetModelVotesQuery, useGetUserVoteQuery, useSendVoteMutation } from "../graphqlTypes";
+import { GetTumbnail } from "../components/model/GetTumbnail";
+import { Loader } from "../components/Loader";
 import { useNavigate, useParams } from "react-router-dom";
-import { getParamFromLogin } from "../..";
+import { getParamFromLogin } from "..";
 
 
 export default function Model() {

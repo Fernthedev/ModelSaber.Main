@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useGetModelsQuery } from "../../graphqlTypes";
-import { Loader } from "../Loader";
-import { ModelCard } from "./ModelCard";
-import ModelFilter from "./ModelFilter";
+import { useGetModelsQuery } from "../graphqlTypes";
+import { Loader } from "../components/Loader";
+import { ModelCard } from "../components/model/ModelCard";
+import ModelFilter from "../components/model/ModelFilter";
 
 export default function Models() {
     const [size, setSize] = useState(10);

@@ -4,13 +4,13 @@ import { Tooltip } from "bootstrap/dist/js/bootstrap.bundle.min";
 import Layout from "./components/Layout";
 import XRegExp from "xregexp";
 import EventEmitter from "events";
-const Developer = lazy(() => import("./components/Developers"));
-const Contributions = lazy(() => import("./components/Contributions"));
-const Home = lazy(() => import("./Home"));
-const Model = lazy(() => import("./components/model/Model"));
-const Models = lazy(() => import("./components/model/Models"));
-const Login = lazy(() => import("./components/Login"));
-const Logout = lazy(() => import("./components/Logout"));
+const Developer = lazy(() => import("./pages/Developers"));
+const Contributions = lazy(() => import("./pages/Contributions"));
+const Home = lazy(() => import("./pages/Home"));
+const Model = lazy(() => import("./pages/Model"));
+const Models = lazy(() => import("./pages/Models"));
+const Login = lazy(() => import("./pages/Login"));
+const Logout = lazy(() => import("./pages/Logout"));
 
 class ModelSaberEventEmitter extends EventEmitter {
     emitLogin() {
