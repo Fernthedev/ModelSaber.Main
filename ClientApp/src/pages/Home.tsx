@@ -1,5 +1,5 @@
 import React from "react";
-import Models from "./components/model/Models";
+import Models from "./Models";
 
 export default function Home() {
     return (

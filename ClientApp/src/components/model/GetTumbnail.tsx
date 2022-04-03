@@ -16,7 +16,7 @@ export function GetTumbnail(props: { thumbnail: string; css: React.CSSProperties
             return (<video className="card-img-top" style={props.css} autoPlay loop muted playsInline>
                 <source src="isfmoment.webm" type="video/webm"></source>
             </video>);
-        return (<UnknownImage css={props.css} />);
+        return (<UnknownImage css={props.css} date={date} />);
     }
 
     let thumb = props.thumbnail;
