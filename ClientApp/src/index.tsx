@@ -1,4 +1,6 @@
-import React, { Component, lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
+import { createRoot } from 'react-dom/client';
+
 import "./index.scss";
 import "bootstrap-icons/font/bootstrap-icons.scss";
 import ReactDOM from "react-dom";
@@ -38,7 +40,10 @@ class Index extends Component {
     }
 }
 
-ReactDOM.render(<Index />, rootElement);
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const reactRoot = createRoot(rootElement!);
+reactRoot.render(<Index />);
 
 registerServiceWorker();
 
