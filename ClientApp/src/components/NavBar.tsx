@@ -17,7 +17,7 @@ export default function NavBar() {
                     <img src="modelsaber-logo.svg" alt="ModelSaberImage" className="img-fluid" width="52" height="52" />
                 </a>
                 <div>
-                    <a className="btn btn-outline-primary me-3" href="https://github.com/ModelSaber/ModelSaber/" target="_blank">GitHub</a>
+                    <a className="btn btn-outline-primary me-3" href="https://github.com/ModelSaber/ModelSaber/" target="_blank"><i className="bi bi-github"></i></a>
                     <a className="btn btn-outline-primary me-3" onClick={() => navigate("/contributions")}>Contributions</a>
                     <a className="btn btn-outline-primary me-3" onClick={() => navigate("/dev")}>Developers</a>
                     <a className="btn btn-outline-primary me-3" href="https://github.com/legoandmars/modeldownloader" target="_blank">ModelDownloader</a>

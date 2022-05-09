@@ -28,7 +28,12 @@ export default class Layout extends Component<any, { build: { buildVersion: stri
             <div className="spacer" />
             <footer className="footer bg-dark">
                 <div className="container">
-                    <label>Build: {this.state.build.buildVersion}, Build Time: {this.state.build.buildTime}</label>
+                    <div className="row">
+                        <label className="col-md-4">Build: {this.state.build.buildVersion}, Build Time: {this.state.build.buildTime}</label>
+                        <div className="col-md-8">
+                            <a className="btn btn-primary" href="https://discord.gg/PTnyY3shSQ" target="_blank"><i className="bi bi-discord"></i></a>
+                        </div>
+                    </div>
                 </div>
             </footer>
         </>);
