@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { mobile } from "../..";
 import { ModelFragment } from "../../graphqlTypes";
 import { GetTumbnail } from "./GetTumbnail";
 
@@ -78,9 +79,14 @@ export class ModelCard extends Component<ModelFragment & { navigate: (path: stri
             </div>
             <div className="card-footer">
                 <div className="row" style={{ margin: "-0.5rem -1rem" }}>
-                    <a href="#" className="col-4 btn btn-sm btn-outline-light" style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0, borderTopLeftRadius: 0 }}>Install</a>
-                    <a href="#" className="col-4 btn btn-sm btn-outline-light" style={{ borderRadius: 0, borderLeft: 0, borderRight: 0 }}>Download</a>
-                    <button className="col-4 btn btn-sm btn-outline-light" style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0 }} onClick={() => this.props.navigate(`/model/${this.props.cursor}`)}>Show</button>
+                    {mobile ? (<>
+                        <a href="#" className="col-4 btn btn-sm btn-outline-light" style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0, borderTopLeftRadius: 0 }}>Install</a>
+                        <a href="#" className="col-4 btn btn-sm btn-outline-light" style={{ borderRadius: 0, borderLeft: 0, borderRight: 0 }}>Download</a>
+                        <button className="col-4 btn btn-sm btn-outline-light" style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 0 }} onClick={() => this.props.navigate(`/model/${this.props.cursor}`)}>Show</button>
+                    </>)
+                        : (<>
+                            <button className="col-4 btn btn-sm btn-outline-light" style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }} onClick={() => this.props.navigate(`/model/${this.props.cursor}`)}>Show</button>
+                        </>)}
                 </div>
             </div>
         </div>);

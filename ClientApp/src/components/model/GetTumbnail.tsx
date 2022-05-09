@@ -12,7 +12,7 @@ export function GetTumbnail(props: { thumbnail: string; css: React.CSSProperties
 
     if (error) {
         const date = new Date();
-        if (date.getDate() === 1 && date.getMonth() === 4 && date.getHours() < 12)
+        if (date.getDate() === 1 && date.getMonth() === 3 && date.getHours() < 12)
             return (<video className="card-img-top" style={props.css} autoPlay loop muted playsInline>
                 <source src="isfmoment.webm" type="video/webm"></source>
             </video>);

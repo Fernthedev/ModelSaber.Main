@@ -12,6 +12,7 @@ const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const rootElement = document.getElementById("root");
 const loaderbackground = document.getElementById("lds-roller");
 const uri = process.env.NODE_ENV == "development" ? process.env.REACT_APP_API_URL : "https://apimodelsaber.rainemods.io";
+export const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 class Index extends Component {
     componentDidMount() {
         if (window.location.pathname !== "/login") {

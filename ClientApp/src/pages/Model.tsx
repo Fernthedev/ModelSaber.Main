@@ -3,7 +3,7 @@ import { useGetModelFullQuery, useGetModelVotesQuery, useGetUserVoteQuery, useSe
 import { GetTumbnail } from "../components/model/GetTumbnail";
 import { Loader } from "../components/Loader";
 import { useNavigate, useParams } from "react-router-dom";
-import { getParamFromLogin } from "..";
+import { getParamFromLogin, mobile } from "..";
 
 
 export default function Model() {
@@ -43,10 +43,10 @@ export default function Model() {
                             {model.users.map((t: any) => (<a key={t.discordId} href="#" className="fs-5 text-decoration-none" style={{ cursor: "pointer" }}>{t.name}</a>))}
                         </div>
                     </div>
-                    <div className="row border-top pt-2 pb-2">
+                    {mobile ? (<div className="row border-top pt-2 pb-2">
                         <div className="col-6 text-center"><a href={`modelsaber:${model.type}:${model.uuid}`} className="h-100 w-100 btn btn-dark">One Click Install</a></div>
                         <div className="col-6 text-center"><a href={model.downloadPath} target="_blank" className="h-100 w-100 btn btn-dark">Download</a></div>
-                    </div>
+                    </div>) : (<></>)}
                     <div className="row border-top pt-1">
                         <h5 className="mb-0">Tags</h5>
                         <div className="d-flex flex-wrap">

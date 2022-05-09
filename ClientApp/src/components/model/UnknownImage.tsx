@@ -5,7 +5,7 @@ let internalCss: React.CSSProperties = { backgroundColor: "rgba(0,0,0,0.3)", box
 export function UnknownImage(props: { css: React.CSSProperties; date: Date; }) {
     const date = props.date;
     function isAprilFirst() {
-        return date.getDay() === 1 && date.getMonth() === 4 && date.getHours() >= 12;
+        return date.getDate() === 1 && date.getMonth() === 3 && date.getHours() >= 12;
     }
     return (
         <div style={{ ...internalCss, ...props.css }}>
