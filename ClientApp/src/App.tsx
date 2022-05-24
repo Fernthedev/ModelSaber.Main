@@ -4,6 +4,7 @@ import { Tooltip } from "bootstrap/dist/js/bootstrap.bundle.min";
 import Layout from "./components/Layout";
 import XRegExp from "xregexp";
 import EventEmitter from "events";
+import ModelUpload from "./pages/ModelUpload";
 const Developer = lazy(() => import("./pages/Developers"));
 const Contributions = lazy(() => import("./pages/Contributions"));
 const Home = lazy(() => import("./pages/Home"));
@@ -46,6 +47,7 @@ export default class App extends Component {
                     <Route path="/discordlogin" element={<Login />} />
                     <Route path="/logout" element={<Logout />} />
                     <Route path="/model/:id" element={<Model />} />
+                    <Route path="/upload" element={<ModelUpload />} /> 
                 </Routes>
             </Layout>
         )
