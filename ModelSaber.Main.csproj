@@ -17,6 +17,8 @@
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Discord.Net.Webhook" Version="3.4.1" />
     <PackageReference Include="EFCore.NamingConventions" Version="6.0.0" />
+    <PackageReference Include="FFMpegCore" Version="4.8.0" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="11.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.3" />
     <PackageReference Include="GraphQL" Version="4.7.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.3">

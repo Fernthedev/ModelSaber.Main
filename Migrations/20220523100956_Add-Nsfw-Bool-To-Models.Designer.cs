@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ModelSaber.Database;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ModelSaber.Main.Migrations
 {
     [DbContext(typeof(ModelSaberDbContext))]
-    partial class ModelSaberDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220523100956_Add-Nsfw-Bool-To-Models")]
+    partial class AddNsfwBoolToModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,11 +33,6 @@ namespace ModelSaber.Main.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("BuildVersion")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("build_version");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date");
@@ -47,11 +44,6 @@ namespace ModelSaber.Main.Migrations
                     b.Property<string>("Hash")
                         .HasColumnType("text")
                         .HasColumnName("hash");
-
-                    b.Property<string>("MinVersion")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("min_version");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -77,15 +69,6 @@ namespace ModelSaber.Main.Migrations
                     b.Property<byte>("Type")
                         .HasColumnType("smallint")
                         .HasColumnName("type");
-
-                    b.Property<string>("UnitySystem")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("unity_system");
-
-                    b.Property<int>("UnitySystemVersion")
-                        .HasColumnType("integer")
-                        .HasColumnName("unity_system_version");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint")

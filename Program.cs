@@ -5,11 +5,13 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Webhook;
+using FFMpegCore;
 
 namespace ModelSaber.Main
 {
@@ -24,11 +26,12 @@ namespace ModelSaber.Main
             var executingAsm = Assembly.GetExecutingAssembly();
             CompiledTime = executingAsm.GetLinkerTime();
             Version = executingAsm.GetName().Version ?? new Version(0,0,420,69);
-            #if DEBUG
+            CreateTempDirectory();
+#if DEBUG
             var envTarget = EnvironmentVariableTarget.User;
-            #else 
+#else
             var envTarget = EnvironmentVariableTarget.Process;
-            #endif
+#endif
             //TODO fix this for linux as it seems to not grab environment variables for some reason
             //var webhookUrl = Environment.GetEnvironmentVariable("DISCORD_WEBHOOK_URL", envTarget);
             //if (string.IsNullOrWhiteSpace(webhookUrl)) throw new Exception("DISCORD_WEBHOOK_URL cannot be null and must be set.");
@@ -45,6 +48,15 @@ namespace ModelSaber.Main
                     #endif
                     webBuilder.UseStartup<Startup>();
                 });
+        //Create temp directory
+        public static void CreateTempDirectory()
+        {
+            var tempDir = Path.Combine(Path.GetTempPath(), Constants.TempDirectory);
+            if (!Directory.Exists(tempDir))
+            {
+                Directory.CreateDirectory(tempDir);
+            }
+        }
     }
 
     public static class Extensions

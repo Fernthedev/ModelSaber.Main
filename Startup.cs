@@ -38,7 +38,11 @@ namespace ModelSaber.Main
             });
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddScoped<IUserService, UserService>();
-
+            services.AddSingleton<FileService>();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder => builder.WithOrigins("*").WithHeaders("*").WithMethods("*"));
+            });
             services.AddResponseCompression();
 
             // In production, the React files will be served from this directory
@@ -61,14 +65,14 @@ namespace ModelSaber.Main
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            
+            app.UseCors();
             app.UseMiddleware<OldLinkMiddleware>();
             app.UseMiddleware<JwtMiddleware>();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseResponseCompression();
-
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
